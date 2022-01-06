@@ -1,32 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   table.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/01/05 21:17:09 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/06 22:53:51 by ywake            ###   ########.fr       */
+/*   Created: 2022/01/06 22:31:13 by ywake             #+#    #+#             */
+/*   Updated: 2022/01/06 23:07:35 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stddef.h>
-#include "settings.h"
-#include "philosopher.h"
-#include "table.h"
+#ifndef TABLE_H
+# define TABLE_H
 
-int	main(int argc, char *argv[])
+# include "philosopher.h"
+
+/**
+ * philos: Philosophers sitting in their seats.
+ * forks: If true, the fork exists, but if false, it doesn't.
+ */
+typedef struct s_table
 {
-	t_settings		settings;
-	t_philosopher	**philos;
-	t_table			*table;
+	t_philosopher	**philos;	
+	bool			*forks;
 
-	if (init_settings(&settings, argc, argv) == false)
-		return (1);
-	philos = init_philosopher(&settings);
-	if (philos == NULL)
-		return (1);
-	table = init_table(&settings, philos);
-	if (table == NULL)
-		return (1);
-}
+}	t_table;
+
+t_table	*init_table(t_settings *settings, t_philosopher **philos);
+
+#endif
