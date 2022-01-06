@@ -1,34 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   process.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/01/05 21:17:09 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/07 00:10:38 by ywake            ###   ########.fr       */
+/*   Created: 2022/01/06 22:20:20 by ywake             #+#    #+#             */
+/*   Updated: 2022/01/06 23:57:36 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stddef.h>
-#include "settings.h"
-#include "philosopher.h"
-#include "table.h"
 #include "process.h"
 
-int	main(int argc, char *argv[])
-{
-	t_settings		settings;
-	t_philosopher	**philos;
-	t_table			*table;
+#include "settings.h"
+#include "table.h"
 
-	if (init_settings(&settings, argc, argv) == false)
-		return (1);
-	philos = init_philosophers(&settings);
-	if (philos == NULL)
-		return (1);
-	table = init_table(&settings, philos);
-	if (table == NULL)
-		return (1);
-	loop(&settings, table);
+void	loop(t_settings *settings, t_table *table)
+{
+	while (1)
+	{
+		take_a_fork(table, 0, RIGHT);
+		take_a_fork(table, 0, LEFT);
+		philo_eat(settings, table->philos[0]);
+		return_a_fork(table, 0, RIGHT);
+		return_a_fork(table, 0, LEFT);
+		philo_sleep(settings, table->philos[0]);
+		philo_think(settings, table->philos[0]);
+	}
 }

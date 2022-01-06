@@ -5,7 +5,9 @@ CFLAGS	:= -g -Wall -Werror -Wextra $(INCLUDE)
 VPATH	:= $(SRCDIR) $(TESTDIR)
 
 SRCDIR	:= srcs/
-SRCS	:= main.c data/settings.c data/philosopher.c utils.c
+SRCS	:= main.c utils.c \
+			data/settings.c data/philosopher.c data/table.c \
+			process/process.c
 OBJS	:= $(SRCS:%.c=$(SRCDIR)%.o)
 DSTRCTR	:= ./tests/destructor.c
 

@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/06 22:31:13 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/06 23:07:35 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/06 23:48:34 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,11 @@ typedef struct s_table
 {
 	t_philosopher	**philos;	
 	bool			*forks;
+	int				length;
 
 }	t_table;
 
 t_table	*init_table(t_settings *settings, t_philosopher **philos);
-
+void	take_a_fork(t_table *table, int philo_num, enum e_fork_dir direction);
+void	return_a_fork(t_table *table, int philo_num, enum e_fork_dir direction);
 #endif
