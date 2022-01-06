@@ -3,9 +3,11 @@
 !.gitkeep
 !.github/
 !.github/**
-!philo/
-!objs/
-!srcs/
 !Makefile
+!**/
 !*.c
 !*.h
+
+# tests
+gtest
+!*.cpp

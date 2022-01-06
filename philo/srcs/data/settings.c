@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/05 21:18:46 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/05 22:49:50 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/05 23:49:04 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include <stddef.h>
 #include "utils.h"
 
-bool	init_data(t_settings *data, int argc, char *argv[])
+bool	init_settings(t_settings *settings, int argc, char *argv[])
 {
 	int	i;
 
@@ -25,13 +25,13 @@ bool	init_data(t_settings *data, int argc, char *argv[])
 	while (argv[i])
 		if (ft_atoi(argv[i++]) < 0)
 			return (false);
-	data->num_of_philos = ft_atoi(argv[1]);
-	data->time_to_die = ft_atoi(argv[2]);
-	data->time_to_eat = ft_atoi(argv[3]);
-	data->time_to_sleep = ft_atoi(argv[4]);
+	settings->num_of_philos = ft_atoi(argv[1]);
+	settings->time_to_die = ft_atoi(argv[2]);
+	settings->time_to_eat = ft_atoi(argv[3]);
+	settings->time_to_sleep = ft_atoi(argv[4]);
 	if (argv[5] == NULL)
-		data->target_num_of_eat = -1;
+		settings->target_num_of_eat = -1;
 	else
-		data->target_num_of_eat = ft_atoi(argv[5]);
+		settings->target_num_of_eat = ft_atoi(argv[5]);
 	return (true);
 }
