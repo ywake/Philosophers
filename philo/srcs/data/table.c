@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/06 22:31:02 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/07 00:09:33 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/07 10:51:21 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <stdlib.h>
 #include "settings.h"
 #include "philosopher.h"
+#include "utils.h"
 
 t_table	*init_table(t_settings *settings, t_philosopher **philos)
 {
@@ -45,7 +46,7 @@ void	take_a_fork(t_table *table, int philo_num, enum e_fork_dir direction)
 		fork_num = 0;
 	table->forks[fork_num] = false;
 	table->philos[philo_num]->forks[direction] = true;
-	printf("timestamp_in_ms %d has taken a fork\n", philo_num);
+	printf("%lld %d has taken a fork\n", get_millitime(), philo_num);
 }
 
 void	return_a_fork(t_table *table, int philo_num, enum e_fork_dir direction)

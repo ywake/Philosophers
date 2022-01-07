@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/05 22:41:28 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/07 00:09:46 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/07 10:51:24 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include "settings.h"
+#include "utils.h"
 
 t_philosopher	*init_philosopher(int number)
 {
@@ -53,19 +54,19 @@ t_philosopher	**init_philosophers(t_settings *settings)
 
 void	philo_eat(t_settings *settings, t_philosopher *philo)
 {
-	printf("timestamp_in_ms %d is eating\n", philo->number);
+	printf("%lld %d is eating\n", get_millitime(), philo->number);
 	usleep(settings->time_to_eat * 1000);
 }
 
 void	philo_sleep(t_settings *settings, t_philosopher *philo)
 {
-	printf("timestamp_in_ms %d is sleeping\n", philo->number);
+	printf("%lld %d is sleeping\n", get_millitime(), philo->number);
 	usleep(settings->time_to_sleep * 1000);
 }
 
 void	philo_think(t_settings *settings, t_philosopher *philo)
 {
 	(void)settings;
-	printf("timestamp_in_ms %d is thinking\n", philo->number);
-	usleep(1000);
+	printf("%lld %d is thinking\n", get_millitime(), philo->number);
+	usleep(1000 * 1000);
 }

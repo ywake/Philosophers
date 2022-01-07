@@ -6,11 +6,14 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/05 21:26:51 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/05 21:46:02 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/07 10:51:25 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "utils.h"
+
+#include <sys/time.h>
+#include <stdbool.h>
 
 int	ft_atoi(const char *str)
 {
@@ -26,4 +29,15 @@ int	ft_atoi(const char *str)
 	while (*str && '0' <= *str && *str <= '9')
 		value = value * 10 + (*str++ - '0');
 	return (sign * value);
+}
+
+int64_t	get_millitime(void)
+{
+	struct timeval	tv;
+	int64_t			time_milli;
+	int				rtn;
+
+	rtn = gettimeofday(&tv, NULL);
+	time_milli = tv.tv_sec * 1000 + tv.tv_usec / 1000;
+	return (time_milli);
 }
