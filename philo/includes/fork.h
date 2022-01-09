@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/09 01:37:00 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/09 13:13:52 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/09 22:43:49 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 typedef struct s_fork
 {
 	bool			ready;
-	pthread_mutex_t	*mutex;
+	pthread_mutex_t	mutex;
 
 }	t_fork;
 

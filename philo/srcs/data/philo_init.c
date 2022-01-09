@@ -59,10 +59,13 @@ t_philo	**init_philosophers(t_table *table)
 
 t_philo	**del_philosophers(t_philo **philos)
 {
-	while (*philos)
+	int	i;
+
+	i = 0;
+	while (philos[i])
 	{
-		del_philosopher(*philos);
-		philos++;
+		del_philosopher(philos[i]);
+		i++;
 	}
 	free(philos);
 	return (NULL);

@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include <pthread.h>
-#include <stdlib.h>
 #include <unistd.h>
 #include <stdio.h>
 #include "settings.h"
@@ -58,10 +57,10 @@ void	*routine(void *arg)
 	while (1)
 	{
 		take_forks(philo->table, philo->number);
-		philo_eat(philo->table, philo->number);
+		philo_eat(philo);
 		return_forks(philo->table, philo->number);
-		philo_sleep(philo->table, philo->number);
-		philo_think(philo->table, philo->number);
+		philo_sleep(philo);
+		philo_think(philo);
 	}
 	return (NULL);
 }

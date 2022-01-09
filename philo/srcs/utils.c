@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/05 21:26:51 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/07 10:51:25 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/09 16:21:35 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,10 @@ int	ft_atoi(const char *str)
 	return (sign * value);
 }
 
-int64_t	get_millitime(void)
+size_t	get_millitime(void)
 {
 	struct timeval	tv;
-	int64_t			time_milli;
+	size_t			time_milli;
 	int				rtn;
 
 	rtn = gettimeofday(&tv, NULL);
