@@ -1,37 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   table.h                                            :+:      :+:    :+:   */
+/*   fork.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/01/06 22:31:13 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/09 11:55:42 by ywake            ###   ########.fr       */
+/*   Created: 2022/01/09 01:37:00 by ywake             #+#    #+#             */
+/*   Updated: 2022/01/09 13:13:52 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef TABLE_H
-# define TABLE_H
+#ifndef FORK_H
+# define FORK_H
 
-# include "settings.h"
-# include "fork.h"
+# include <pthread.h>
+# include <stdbool.h>
 
-enum e_fork_dir
+typedef struct s_fork
 {
-	RIGHT,
-	LEFT,
-};
+	bool			ready;
+	pthread_mutex_t	*mutex;
 
-typedef struct s_table
-{
-	t_settings	*settings;
-	t_fork		**forks;
-	int			length;
+}	t_fork;
 
-}	t_table;
+t_fork	*init_fork(void);
+t_fork	*del_fork(t_fork *fork);
+bool	_take(t_fork *fork);
+bool	_return(t_fork *fork);
 
-t_table	*init_table(t_settings *settings);
-t_table	*del_table(t_table *table);
-void	take_forks(t_table *table, int philo_number);
-void	return_forks(t_table *table, int philo_number);
 #endif
