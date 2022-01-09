@@ -1,13 +1,13 @@
 NAME	:= philo
 CC		:= gcc
 INCLUDE	:= -I./includes
+LIBS	:= -lpthread
 CFLAGS	:= -g -Wall -Werror -Wextra $(INCLUDE)
 VPATH	:= $(SRCDIR) $(TESTDIR)
 
 SRCDIR	:= srcs/
 SRCS	:= main.c utils.c \
-			data/settings.c data/philosopher.c data/table.c \
-			process/process.c
+			data/settings.c data/table.c data/fork.c data/philo_init.c data/philo_funcs.c
 OBJS	:= $(SRCS:%.c=$(SRCDIR)%.o)
 DSTRCTR	:= ./tests/destructor.c
 
@@ -75,7 +75,7 @@ test: FORCE $(gtest) $(TESTOBJS)
 		$(TESTOBJS) \
 		$(gTestDir)/$(gTestVer)/googletest/src/gtest_main.cc \
 		$(gTestDir)/gtest/gtest-all.cc \
-		-I$(gTestDir) $(INCLUDE) -lpthread -o tester
+		-I$(gTestDir) $(INCLUDE) $(LIBS) -o tester
 	./tester
 	@$(RM) -r tester tester.dSYM
 

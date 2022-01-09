@@ -6,31 +6,31 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/05 22:42:07 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/06 23:37:10 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/09 12:14:55 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILOSOPHER_H
 # define PHILOSOPHER_H
 
-# include "settings.h"
+# include <pthread.h>
+# include "table.h"
 
-enum e_fork_dir
+typedef struct s_philo
 {
-	RIGHT,
-	LEFT,
-};
+	int			number;
+	pthread_t	*thread;
+	t_table		*table;
 
-typedef struct s_philosopher
-{
-	int		number;
-	bool	forks[2];
+}	t_philo;
 
-}	t_philosopher;
+t_philo	*init_philosopher(t_table *table, int philo_number);
+t_philo	*del_philosopher(t_philo *philo);
+t_philo	**init_philosophers(t_table *table);
+t_philo	**del_philosophers(t_philo **philos);
 
-t_philosopher	**init_philosophers(t_settings *settings);
-void			philo_eat(t_settings *settings, t_philosopher *philo);
-void			philo_sleep(t_settings *settings, t_philosopher *philo);
-void			philo_think(t_settings *settings, t_philosopher *philo);
+void	philo_eat(t_table *table, int philo_number);
+void	philo_sleep(t_table *table, int philo_number);
+void	philo_think(t_table *table, int philo_number);
 
 #endif
