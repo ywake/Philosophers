@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/09 12:06:50 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/09 13:35:13 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/09 22:59:20 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,4 +36,14 @@ void	philo_think(t_philo *philo)
 {
 	printf("%zu %d is thinking\n", get_millitime(), philo->number);
 	// usleep(1000 * 1000);
+}
+
+bool	philo_dead(t_philo	*philo)
+{
+	if (pthread_mutex_lock(&philo->mutex))
+		return (false);
+	philo->is_died = true;
+	if (pthread_mutex_unlock(&philo->mutex))
+		return (false);
+	return (true);
 }

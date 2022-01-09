@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/05 22:42:07 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/09 12:14:55 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/09 22:59:54 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,12 @@
 
 typedef struct s_philo
 {
-	int			number;
-	pthread_t	*thread;
-	t_table		*table;
+	int				number;
+	t_table			*table;
+	pthread_t		thread;
+	pthread_mutex_t	mutex;
+	size_t			last_eat;
+	bool			is_died;
 
 }	t_philo;
 
@@ -29,8 +32,9 @@ t_philo	*del_philosopher(t_philo *philo);
 t_philo	**init_philosophers(t_table *table);
 t_philo	**del_philosophers(t_philo **philos);
 
-void	philo_eat(t_table *table, int philo_number);
-void	philo_sleep(t_table *table, int philo_number);
-void	philo_think(t_table *table, int philo_number);
+void	philo_eat(t_philo *philo);
+void	philo_sleep(t_philo *philo);
+void	philo_think(t_philo *philo);
+bool	philo_dead(t_philo	*philo);
 
 #endif
