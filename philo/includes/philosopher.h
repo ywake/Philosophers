@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/05 22:42:07 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/09 22:59:54 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/10 12:55:39 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,5 +36,8 @@ void	philo_eat(t_philo *philo);
 void	philo_sleep(t_philo *philo);
 void	philo_think(t_philo *philo);
 bool	philo_dead(t_philo	*philo);
+
+void	take_forks(t_philo *philo);
+void	return_forks(t_philo *philo);
 
 #endif

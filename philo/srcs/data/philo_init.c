@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/05 22:41:28 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/09 23:28:33 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/10 12:53:35 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,4 +73,14 @@ t_philo	**del_philosophers(t_philo **philos)
 	}
 	free(philos);
 	return (NULL);
+}
+
+bool	philo_dead(t_philo	*philo)
+{
+	if (pthread_mutex_lock(&philo->mutex))
+		return (false);
+	philo->is_died = true;
+	if (pthread_mutex_unlock(&philo->mutex))
+		return (false);
+	return (true);
 }

@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/05 21:17:09 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/10 10:59:24 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/10 13:00:14 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,11 +79,11 @@ void	*routine(void *arg)
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
-	while (1)
+	while (philo->is_died == false)
 	{
-		take_forks(philo->table, philo->number);
+		take_forks(philo);
 		philo_eat(philo);
-		return_forks(philo->table, philo->number);
+		return_forks(philo);
 		philo_sleep(philo);
 		philo_think(philo);
 	}
@@ -108,7 +108,8 @@ void	*observe(void *arg)
 		{
 			if (now - philos[i]->last_eat > time_to_die)
 			{
-				philo_dead(philos[i]);
+				while (*philos)
+					philo_dead(*philos++);
 				printf("%zu %d died\n", now, i);
 				return (NULL);
 			}
