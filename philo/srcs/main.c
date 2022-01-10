@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/05 21:17:09 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/10 23:28:52 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/10 23:42:13 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,7 @@ void	*observe(void *arg)
 		i = 0;
 		while (i < philos[0]->table->length)
 		{
-			if (now - get_last_eat(philos[i]) > time_to_die)
+			if (now - last_eat(philos[i]) > time_to_die)
 			{
 				someone_died(philos[i]->table);
 				printf("%zu %d died\n", get_millitime(), i);

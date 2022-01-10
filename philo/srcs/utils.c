@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/05 21:26:51 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/10 23:11:10 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/10 23:45:16 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include <sys/time.h>
 #include <stdbool.h>
 #include <unistd.h>
+#include "types.h"
 
 int	ft_atoi(const char *str)
 {
@@ -32,10 +33,10 @@ int	ft_atoi(const char *str)
 	return (sign * value);
 }
 
-ssize_t	get_millitime(void)
+t_timestamp	get_millitime(void)
 {
 	struct timeval	tv;
-	ssize_t			time_milli;
+	t_timestamp		time_milli;
 
 	gettimeofday(&tv, NULL);
 	time_milli = tv.tv_sec * 1000 + tv.tv_usec / 1000;
@@ -59,8 +60,8 @@ useconds_t	get_utime(void)
  */
 void	my_usleep(useconds_t sleep_usec)
 {
-	ssize_t	endtime;
-	ssize_t	lefttime;
+	t_timestamp	endtime;
+	t_timestamp	lefttime;
 
 	endtime = get_utime() + sleep_usec;
 	lefttime = sleep_usec;

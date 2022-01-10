@@ -7,7 +7,8 @@ VPATH	:= $(SRCDIR) $(TESTDIR)
 
 SRCDIR	:= srcs/
 SRCS	:= main.c utils.c \
-			data/settings.c data/table.c data/fork.c data/philo_init.c data/philo_funcs.c
+			data/settings.c data/table.c data/fork.c \
+			data/philo_init.c data/philo_funcs.c data/philo_vars.c
 OBJS	:= $(SRCS:%.c=$(SRCDIR)%.o)
 DSTRCTR	:= ./tests/destructor.c
 

@@ -1,22 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.h                                            :+:      :+:    :+:   */
+/*   philo_vars.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/01/05 21:45:29 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/10 23:44:54 by ywake            ###   ########.fr       */
+/*   Created: 2022/01/10 23:41:13 by ywake             #+#    #+#             */
+/*   Updated: 2022/01/10 23:46:36 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef UTILS_H
-# define UTILS_H
+#include "philosopher.h"
 
-# include "types.h"
+t_timestamp	last_eat(t_philo *philo)
+{
+	t_timestamp	last_eat;
 
-int			ft_atoi(const char *str);
-t_timestamp	get_millitime(void);
-void		my_usleep(useconds_t usec);
-
-#endif
+	pthread_mutex_lock(&philo->mutex);
+	last_eat = philo->last_eat;
+	pthread_mutex_unlock(&philo->mutex);
+	return (last_eat);
+}
