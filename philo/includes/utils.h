@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/05 21:45:29 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/10 23:44:54 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/11 02:15:49 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,6 @@
 
 int			ft_atoi(const char *str);
 t_timestamp	get_millitime(void);
-void		my_usleep(useconds_t usec);
+void		my_usleep(t_timestamp usec);
 
 #endif

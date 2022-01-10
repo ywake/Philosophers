@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/05 21:26:51 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/10 23:45:16 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/11 02:15:43 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ t_timestamp	get_millitime(void)
 	return (time_milli);
 }
 
-useconds_t	get_utime(void)
+t_timestamp	get_utime(void)
 {
 	struct timeval	tv;
 	size_t			utime;
@@ -58,7 +58,7 @@ useconds_t	get_utime(void)
 /**
  * Reference from tkomatsu
  */
-void	my_usleep(useconds_t sleep_usec)
+void	my_usleep(t_timestamp sleep_usec)
 {
 	t_timestamp	endtime;
 	t_timestamp	lefttime;
