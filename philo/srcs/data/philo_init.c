@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/05 22:41:28 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/10 23:41:45 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/11 00:13:13 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ t_philo	*init_philosopher(t_table *table, int philo_number)
 		return (NULL);
 	philo->number = philo_number;
 	philo->table = table;
+	philo->left_num_of_eat = table->settings->target_num_of_eat;
 	philo->last_eat = get_millitime();
 	if (pthread_mutex_init(&philo->mutex, NULL))
 		return (del_philosopher(philo));

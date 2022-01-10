@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/09 12:06:50 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/10 23:55:34 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/11 00:48:00 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,19 +20,18 @@ void	philo_eat(t_philo *philo)
 {
 	size_t	time;
 
-	if (is_someone_died(philo->table))
+	if (is_someone_died(philo->table) || left_num_of_eat(philo) == 0)
 		return ;
 	time = get_millitime();
 	printf("%zu %d is eating\n", time, philo->number);
-	pthread_mutex_lock(&philo->mutex);
-	philo->last_eat = time;
-	pthread_mutex_unlock(&philo->mutex);
+	set_last_eat(philo, time);
 	my_usleep(philo->table->settings->time_to_eat * 1000);
+	decrement_left_num_of_eat(philo);
 }
 
 void	philo_sleep(t_philo *philo)
 {
-	if (is_someone_died(philo->table))
+	if (is_someone_died(philo->table) || left_num_of_eat(philo) == 0)
 		return ;
 	printf("%zu %d is sleeping\n", get_millitime(), philo->number);
 	my_usleep(philo->table->settings->time_to_sleep * 1000);
@@ -40,7 +39,7 @@ void	philo_sleep(t_philo *philo)
 
 void	philo_think(t_philo *philo)
 {
-	if (is_someone_died(philo->table))
+	if (is_someone_died(philo->table) || left_num_of_eat(philo) == 0)
 		return ;
 	printf("%zu %d is thinking\n", get_millitime(), philo->number);
 }
@@ -58,10 +57,10 @@ void	take_forks(t_philo *philo)
 		fork_num = philo->number + dir;
 		if (fork_num >= philo->table->length)
 			fork_num = 0;
-		while (!is_someone_died(philo->table)
+		while (!is_someone_died(philo->table) && left_num_of_eat(philo)
 			&& _take(philo->table->forks[fork_num]) == false)
 			my_usleep(1000);
-		if (is_someone_died(philo->table))
+		if (is_someone_died(philo->table) || left_num_of_eat(philo) == 0)
 			return ;
 		printf("%zu %d has taken a fork\n", get_millitime(), philo->number);
 		i++;

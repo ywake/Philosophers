@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/05 22:42:07 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/10 23:54:14 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/11 00:48:30 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ typedef struct s_philo
 	pthread_t		thread;
 	pthread_mutex_t	mutex;
 	t_timestamp		last_eat;
-	int				num_ate;
+	int				left_num_of_eat;
 
 }	t_philo;
 
@@ -42,5 +42,8 @@ void		take_forks(t_philo *philo);
 void		return_forks(t_philo *philo);
 
 t_timestamp	last_eat(t_philo *philo);
+void		set_last_eat(t_philo *philo, t_timestamp last_eat);
+int			left_num_of_eat(t_philo *philo);
+void		decrement_left_num_of_eat(t_philo *philo);
 
 #endif

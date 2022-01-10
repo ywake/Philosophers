@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/05 21:17:09 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/10 23:42:13 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/11 00:55:58 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ int	main(int argc, char *argv[])
 	philos = initialize(argc, argv);
 	if (philos == NULL)
 		return (1);
+	pthread_create(&observer, NULL, observe, philos);
 	i = 0;
 	while (i < philos[0]->table->length)
 	{
@@ -40,7 +41,6 @@ int	main(int argc, char *argv[])
 		if (pthread_detach(philos[i++]->thread))
 			return (1);
 	}
-	pthread_create(&observer, NULL, observe, philos);
 	pthread_join(observer, NULL);
 	del_settings(philos[0]->table->settings);
 	del_table(philos[0]->table);
@@ -93,28 +93,40 @@ void	*routine(void *arg)
 	return (NULL);
 }
 
+bool	is_died(t_philo	*philo, t_timestamp now)
+{
+	if (now - last_eat(philo) > philo->table->settings->time_to_die)
+	{
+		someone_died(philo->table);
+		printf("%zu %d died\n", now, philo->number);
+		return (true);
+	}
+	return (false);
+}
+
 void	*observe(void *arg)
 {
 	int		i;
 	t_philo	**philos;
 	size_t	now;
-	size_t	time_to_die;
+	bool	is_finish;
 
 	philos = (t_philo **)arg;
-	time_to_die = (size_t)philos[0]->table->settings->time_to_die;
 	while (1)
 	{
 		now = get_millitime();
 		i = 0;
+		is_finish = true;
 		while (i < philos[0]->table->length)
 		{
-			if (now - last_eat(philos[i]) > time_to_die)
-			{
-				someone_died(philos[i]->table);
-				printf("%zu %d died\n", get_millitime(), i);
+			if (is_died(philos[i], now))
 				return (NULL);
-			}
+			if (is_finish && philos[i]->left_num_of_eat != 0)
+				is_finish = false;
 			i++;
 		}
+		if (is_finish)
+			return (NULL);
+		my_usleep(1000);
 	}
 }
