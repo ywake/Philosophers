@@ -6,14 +6,14 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/10 23:42:49 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/10 23:43:48 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/11 01:01:18 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef TYPES_H
 # define TYPES_H
 
-#include <sys/types.h>
+# include <sys/types.h>
 
 typedef ssize_t	t_timestamp;
 
