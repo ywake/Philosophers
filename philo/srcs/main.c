@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/05 21:17:09 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/09 23:19:51 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/10 10:59:24 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,27 +18,21 @@
 #include "table.h"
 #include "utils.h"
 
+t_philo	**initialize(int argc, char *argv[]);
 void	*routine(void *arg);
 void	*observe(void *arg);
 
 int	main(int argc, char *argv[])
 {
-	t_settings	settings;
-	t_table		*table;
 	t_philo		**philos;
 	pthread_t	observer;
 	int			i;
 
-	if (init_settings(&settings, argc, argv) == false)
-		return (1);
-	table = init_table(&settings);
-	if (table == NULL)
-		return (1);
-	philos = init_philosophers(table);
+	philos = initialize(argc, argv);
 	if (philos == NULL)
 		return (1);
 	i = 0;
-	while (i < table->length)
+	while (i < philos[0]->table->length)
 	{
 		if (pthread_create(&philos[i]->thread, NULL, routine, philos[i]))
 			return (1);
@@ -47,9 +41,37 @@ int	main(int argc, char *argv[])
 	}
 	pthread_create(&observer, NULL, observe, philos);
 	pthread_join(observer, NULL);
-	del_table(table);
+	del_settings(philos[0]->table->settings);
+	del_table(philos[0]->table);
 	del_philosophers(philos);
 	return (0);
+}
+
+t_philo	**initialize(int argc, char *argv[])
+{
+	t_settings	*settings;
+	t_table		*table;
+	t_philo		**philos;
+
+	if (argc != 5 && argc != 6)
+		return (NULL);
+	settings = init_settings(argc, argv);
+	if (settings == NULL)
+		return (NULL);
+	table = init_table(settings);
+	if (table == NULL)
+	{
+		del_settings(settings);
+		return (NULL);
+	}
+	philos = init_philosophers(table);
+	if (philos == NULL)
+	{
+		del_settings(settings);
+		del_table(table);
+		return (NULL);
+	}
+	return (philos);
 }
 
 void	*routine(void *arg)

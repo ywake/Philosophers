@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/05 21:21:07 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/05 22:49:19 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/10 10:48:28 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ typedef struct s_settings
 
 }	t_settings;
 
-bool	init_settings(t_settings *data, int argc, char *argv[]);
+t_settings	*init_settings(int argc, char *argv[]);
+t_settings	*del_settings(t_settings *settings);
 
 #endif
