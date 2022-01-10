@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/05 21:17:09 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/11 00:55:58 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/11 02:36:06 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ bool	is_died(t_philo	*philo, t_timestamp now)
 	if (now - last_eat(philo) > philo->table->settings->time_to_die)
 	{
 		someone_died(philo->table);
-		printf("%zu %d died\n", now, philo->number);
+		print(philo->table, "%zu %d died\n", now, philo->number);
 		return (true);
 	}
 	return (false);
@@ -121,7 +121,7 @@ void	*observe(void *arg)
 		{
 			if (is_died(philos[i], now))
 				return (NULL);
-			if (is_finish && philos[i]->left_num_of_eat != 0)
+			if (is_finish && left_num_of_eat(philos[i]) != 0)
 				is_finish = false;
 			i++;
 		}

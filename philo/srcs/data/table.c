@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/06 22:31:02 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/10 14:31:57 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/11 02:30:16 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,4 +74,11 @@ bool	is_someone_died(t_table *table)
 	is_someone_died = table->is_someone_died;
 	pthread_mutex_unlock(&table->mutex);
 	return (is_someone_died);
+}
+
+void	print(t_table *table, const char *fmt, t_timestamp time, int number)
+{
+	pthread_mutex_lock(&table->printf_mutex);
+	printf(fmt, time, number);
+	pthread_mutex_unlock(&table->printf_mutex);
 }
