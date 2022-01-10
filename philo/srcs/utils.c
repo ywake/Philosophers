@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/05 21:26:51 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/09 16:21:35 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/10 23:11:10 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 #include <sys/time.h>
 #include <stdbool.h>
+#include <unistd.h>
 
 int	ft_atoi(const char *str)
 {
@@ -31,13 +32,41 @@ int	ft_atoi(const char *str)
 	return (sign * value);
 }
 
-size_t	get_millitime(void)
+ssize_t	get_millitime(void)
 {
 	struct timeval	tv;
-	size_t			time_milli;
-	int				rtn;
+	ssize_t			time_milli;
 
-	rtn = gettimeofday(&tv, NULL);
+	gettimeofday(&tv, NULL);
 	time_milli = tv.tv_sec * 1000 + tv.tv_usec / 1000;
 	return (time_milli);
+}
+
+useconds_t	get_utime(void)
+{
+	struct timeval	tv;
+	size_t			utime;
+
+	gettimeofday(&tv, NULL);
+	utime = tv.tv_sec * 1000 * 1000 + tv.tv_usec;
+	return (utime);
+}
+
+#define ALLOW_ERROR_USEC 1000
+
+/**
+ * Reference from tkomatsu
+ */
+void	my_usleep(useconds_t sleep_usec)
+{
+	ssize_t	endtime;
+	ssize_t	lefttime;
+
+	endtime = get_utime() + sleep_usec;
+	lefttime = sleep_usec;
+	while (lefttime > 0)
+	{
+		usleep(lefttime / 2);
+		lefttime = endtime - get_utime();
+	}
 }

@@ -6,11 +6,12 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/05 21:17:09 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/10 13:00:14 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/10 23:28:52 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <pthread.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <stdio.h>
 #include "settings.h"
@@ -79,7 +80,9 @@ void	*routine(void *arg)
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
-	while (philo->is_died == false)
+	if (philo->number % 2)
+		my_usleep(125);
+	while (is_someone_died(philo->table) == false)
 	{
 		take_forks(philo);
 		philo_eat(philo);
@@ -101,16 +104,14 @@ void	*observe(void *arg)
 	time_to_die = (size_t)philos[0]->table->settings->time_to_die;
 	while (1)
 	{
-		usleep(1000 * 1000);
 		now = get_millitime();
 		i = 0;
 		while (i < philos[0]->table->length)
 		{
-			if (now - philos[i]->last_eat > time_to_die)
+			if (now - get_last_eat(philos[i]) > time_to_die)
 			{
-				while (*philos)
-					philo_dead(*philos++);
-				printf("%zu %d died\n", now, i);
+				someone_died(philos[i]->table);
+				printf("%zu %d died\n", get_millitime(), i);
 				return (NULL);
 			}
 			i++;

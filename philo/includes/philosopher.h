@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/05 22:42:07 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/10 12:55:39 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/10 23:15:49 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define PHILOSOPHER_H
 
 # include <pthread.h>
+# include <sys/types.h>
 # include "table.h"
 
 typedef struct s_philo
@@ -22,8 +23,7 @@ typedef struct s_philo
 	t_table			*table;
 	pthread_t		thread;
 	pthread_mutex_t	mutex;
-	size_t			last_eat;
-	bool			is_died;
+	ssize_t			last_eat;
 
 }	t_philo;
 
@@ -35,9 +35,10 @@ t_philo	**del_philosophers(t_philo **philos);
 void	philo_eat(t_philo *philo);
 void	philo_sleep(t_philo *philo);
 void	philo_think(t_philo *philo);
-bool	philo_dead(t_philo	*philo);
 
 void	take_forks(t_philo *philo);
 void	return_forks(t_philo *philo);
+
+ssize_t	get_last_eat(t_philo *philo);
 
 #endif
