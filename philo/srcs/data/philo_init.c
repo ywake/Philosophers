@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/05 22:41:28 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/11 00:13:13 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/11 11:41:02 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,8 @@ t_philo	*del_philosopher(t_philo *philo)
 {
 	if (philo == NULL)
 		return (NULL);
+	pthread_mutex_lock(&philo->mutex);
+	pthread_mutex_unlock(&philo->mutex);
 	pthread_mutex_destroy(&philo->mutex);
 	free(philo);
 	return (NULL);
@@ -46,6 +48,8 @@ t_philo	**init_philosophers(t_table *table)
 	t_philo	**philos;
 	int		i;
 
+	if (table == NULL)
+		return (NULL);
 	philos = (t_philo **)malloc(sizeof(t_philo *) * (table->length + 1));
 	if (philos == NULL)
 		return (NULL);
@@ -65,12 +69,28 @@ t_philo	**del_philosophers(t_philo **philos)
 {
 	int	i;
 
+	if (philos == NULL)
+		return (NULL);
 	i = 0;
 	while (philos[i])
 	{
-		del_philosopher(philos[i]);
+		philos[i] = del_philosopher(philos[i]);
 		i++;
 	}
 	free(philos);
 	return (NULL);
+}
+
+bool	is_died(t_philo	*philo)
+{
+	t_timestamp	now;
+
+	now = get_millitime();
+	if (now - last_eat(philo) > philo->table->settings->time_to_die)
+	{
+		set_finish(philo->table);
+		print(philo->table, "%zu %d died\n", now, philo->number);
+		return (true);
+	}
+	return (false);
 }

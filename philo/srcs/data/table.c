@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/06 22:31:02 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/11 02:30:16 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/11 11:52:16 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,14 +31,19 @@ t_table	*init_table(t_settings *settings)
 		return (NULL);
 	table->settings = settings;
 	table->length = settings->num_of_philos;
-	table->is_someone_died = false;
+	table->is_finish = false;
 	table->forks = (t_fork **)malloc(sizeof(t_fork *) * table->length);
 	if (table->forks == NULL)
 		return (del_table(table));
 	i = 0;
 	while (i < table->length)
-		table->forks[i++] = init_fork();
-	if (pthread_mutex_init(&table->mutex, NULL))
+	{
+		table->forks[i] = init_fork();
+		if (table->forks[i++] == NULL)
+			return (del_table(table));
+	}
+	if (pthread_mutex_init(&table->mutex, NULL)
+		|| pthread_mutex_init(&table->printf_mutex, NULL))
 		return (del_table(table));
 	return (table);
 }
@@ -47,37 +52,46 @@ t_table	*del_table(t_table *table)
 {
 	int	i;
 
+	if (table == NULL)
+		return (NULL);
+	pthread_mutex_lock(&table->mutex);
+	pthread_mutex_lock(&table->printf_mutex);
 	i = 0;
-	while (table->forks && i < table->length)
+	while (table->forks && i < table->length && table->forks[i])
 	{
 		table->forks[i] = del_fork(table->forks[i]);
 		i++;
 	}
 	free(table->forks);
+	pthread_mutex_unlock(&table->mutex);
 	pthread_mutex_destroy(&table->mutex);
+	pthread_mutex_unlock(&table->printf_mutex);
+	pthread_mutex_destroy(&table->printf_mutex);
 	free(table);
 	return (NULL);
 }
 
-void	someone_died(t_table *table)
+void	set_finish(t_table *table)
 {
 	pthread_mutex_lock(&table->mutex);
-	table->is_someone_died = true;
+	table->is_finish = true;
 	pthread_mutex_unlock(&table->mutex);
 }
 
-bool	is_someone_died(t_table *table)
+bool	is_finish(t_table *table)
 {
-	bool	is_someone_died;
+	bool	is_finish;
 
 	pthread_mutex_lock(&table->mutex);
-	is_someone_died = table->is_someone_died;
+	is_finish = table->is_finish;
 	pthread_mutex_unlock(&table->mutex);
-	return (is_someone_died);
+	return (is_finish);
 }
 
 void	print(t_table *table, const char *fmt, t_timestamp time, int number)
 {
+	if (is_finish(table))
+		return ;
 	pthread_mutex_lock(&table->printf_mutex);
 	printf(fmt, time, number);
 	pthread_mutex_unlock(&table->printf_mutex);

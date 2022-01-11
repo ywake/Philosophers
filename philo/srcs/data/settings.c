@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/05 21:18:46 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/10 10:59:40 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/11 11:21:42 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,6 @@ t_settings	*init_settings(int argc, char *argv[])
 	while (argv[i])
 		if (ft_atoi(argv[i++]) < 0)
 			return (NULL);
-	if (ft_atoi(argv[1]) < 1)
-		return (NULL);
 	settings = (t_settings *)malloc(sizeof(t_settings));
 	if (settings == NULL)
 		return (NULL);
@@ -39,6 +37,8 @@ t_settings	*init_settings(int argc, char *argv[])
 		settings->target_num_of_eat = -1;
 	else
 		settings->target_num_of_eat = ft_atoi(argv[5]);
+	if (settings->num_of_philos < 1)
+		return (del_settings(settings));
 	return (settings);
 }
 

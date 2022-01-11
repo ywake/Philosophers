@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/05 21:17:09 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/11 02:36:06 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/11 12:11:54 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 #include "utils.h"
 
 t_philo	**initialize(int argc, char *argv[]);
+int		clean(t_philo **philos);
 void	*routine(void *arg);
 void	*observe(void *arg);
 
@@ -32,19 +33,18 @@ int	main(int argc, char *argv[])
 	philos = initialize(argc, argv);
 	if (philos == NULL)
 		return (1);
-	pthread_create(&observer, NULL, observe, philos);
+	if (pthread_create(&observer, NULL, observe, philos))
+		return (clean(philos));
 	i = 0;
 	while (i < philos[0]->table->length)
 	{
 		if (pthread_create(&philos[i]->thread, NULL, routine, philos[i]))
-			return (1);
+			return (clean(philos));
 		if (pthread_detach(philos[i++]->thread))
-			return (1);
+			return (clean(philos));
 	}
 	pthread_join(observer, NULL);
-	del_settings(philos[0]->table->settings);
-	del_table(philos[0]->table);
-	del_philosophers(philos);
+	clean(philos);
 	return (0);
 }
 
@@ -57,76 +57,65 @@ t_philo	**initialize(int argc, char *argv[])
 	if (argc != 5 && argc != 6)
 		return (NULL);
 	settings = init_settings(argc, argv);
-	if (settings == NULL)
-		return (NULL);
 	table = init_table(settings);
-	if (table == NULL)
-	{
-		del_settings(settings);
-		return (NULL);
-	}
 	philos = init_philosophers(table);
 	if (philos == NULL)
-	{
-		del_settings(settings);
-		del_table(table);
-		return (NULL);
-	}
+		return (del_settings(settings), (t_philo **)del_table(table));
 	return (philos);
 }
+
+int	clean(t_philo **philos)
+{
+	del_settings(philos[0]->table->settings);
+	del_table(philos[0]->table);
+	del_philosophers(philos);
+	return (1);
+}
+
+typedef void	(*t_func)(t_philo *philo);
 
 void	*routine(void *arg)
 {
 	t_philo	*philo;
+	t_func	*funcs;
+	int		i;
 
 	philo = (t_philo *)arg;
+	funcs = (t_func []){
+		take_forks, philo_eat, return_forks, philo_sleep, philo_think};
 	if (philo->number % 2)
-		my_usleep(125);
-	while (is_someone_died(philo->table) == false)
+		my_usleep(250);
+	i = 0;
+	while (is_finish(philo->table) == false)
 	{
-		take_forks(philo);
-		philo_eat(philo);
-		return_forks(philo);
-		philo_sleep(philo);
-		philo_think(philo);
+		funcs[i](philo);
+		i = (i + 1) % 5;
 	}
 	return (NULL);
-}
-
-bool	is_died(t_philo	*philo, t_timestamp now)
-{
-	if (now - last_eat(philo) > philo->table->settings->time_to_die)
-	{
-		someone_died(philo->table);
-		print(philo->table, "%zu %d died\n", now, philo->number);
-		return (true);
-	}
-	return (false);
 }
 
 void	*observe(void *arg)
 {
 	int		i;
 	t_philo	**philos;
-	size_t	now;
-	bool	is_finish;
+	bool	flg_finish;
 
 	philos = (t_philo **)arg;
-	while (1)
+	while (!is_finish(philos[0]->table))
 	{
-		now = get_millitime();
 		i = 0;
-		is_finish = true;
+		flg_finish = true;
 		while (i < philos[0]->table->length)
 		{
-			if (is_died(philos[i], now))
+			if (is_died(philos[i]))
 				return (NULL);
-			if (is_finish && left_num_of_eat(philos[i]) != 0)
-				is_finish = false;
+			if (flg_finish && left_num_of_eat(philos[i]) != 0)
+				flg_finish = false;
 			i++;
 		}
-		if (is_finish)
-			return (NULL);
+		if (flg_finish)
+			set_finish(philos[0]->table);
 		my_usleep(1000);
 	}
+	return (NULL);
 }

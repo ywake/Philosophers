@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/09 01:38:15 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/09 22:44:39 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/11 11:32:13 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@ t_fork	*del_fork(t_fork *fork)
 {
 	if (fork == NULL)
 		return (NULL);
+	pthread_mutex_lock(&fork->mutex);
+	pthread_mutex_unlock(&fork->mutex);
 	pthread_mutex_destroy(&fork->mutex);
 	free(fork);
 	return (NULL);
@@ -37,26 +39,23 @@ t_fork	*del_fork(t_fork *fork)
 
 bool	_take(t_fork *fork)
 {
-	bool	old_ready;
-	bool	res;
+	bool	there_is_a_fork;
 
-	if (pthread_mutex_lock(&fork->mutex))
+	if (fork == NULL)
 		return (false);
-	old_ready = fork->ready;
-	if (fork->ready)
+	pthread_mutex_lock(&fork->mutex);
+	there_is_a_fork = fork->ready;
+	if (there_is_a_fork)
 		fork->ready = false;
-	res = old_ready != fork->ready;
-	if (pthread_mutex_unlock(&fork->mutex))
-		return (false);
-	return (res);
+	pthread_mutex_unlock(&fork->mutex);
+	return (there_is_a_fork);
 }
 
-bool	_return(t_fork *fork)
+void	_return(t_fork *fork)
 {
-	if (pthread_mutex_lock(&fork->mutex))
-		return (false);
+	if (fork == NULL)
+		return ;
+	pthread_mutex_lock(&fork->mutex);
 	fork->ready = true;
-	if (pthread_mutex_unlock(&fork->mutex))
-		return (false);
-	return (true);
+	pthread_mutex_unlock(&fork->mutex);
 }
