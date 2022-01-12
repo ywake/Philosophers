@@ -1,4 +1,5 @@
 *
+!.editorconfig
 !.gitignore
 !.gitkeep
 !.github/
@@ -9,5 +10,6 @@
 !*.h
 
 # tests
+destructor.c
 gtest
 !*.cpp

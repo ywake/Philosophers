@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/05 22:41:28 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/12 13:14:15 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/13 02:34:57 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ t_philo	*init_philosopher(t_table *table, int philo_number)
 	philo->number = philo_number;
 	philo->table = table;
 	philo->left_num_of_eat = table->settings->target_num_of_eat;
-	philo->last_eat = get_millitime();
+	philo->last_eat = get_timestamp();
 	if (pthread_mutex_init(&philo->mutex, NULL))
 		return (del_philosopher(philo));
 	return (philo);
@@ -86,7 +86,7 @@ bool	is_died(t_philo	*philo)
 {
 	t_timestamp	now;
 
-	now = get_millitime();
+	now = get_timestamp();
 	if (now - last_eat(philo) > philo->table->settings->time_to_die)
 	{
 		set_finish(philo->table);

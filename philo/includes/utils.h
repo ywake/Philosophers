@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/05 21:45:29 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/11 02:15:49 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/13 02:34:48 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 # include "types.h"
 
 int			ft_atoi(const char *str);
-t_timestamp	get_millitime(void);
+t_timestamp	get_timestamp(void);
 void		my_usleep(t_timestamp usec);
 
 #endif

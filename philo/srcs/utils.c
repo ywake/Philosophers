@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/05 21:26:51 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/11 02:15:43 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/13 02:35:00 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int	ft_atoi(const char *str)
 	return (sign * value);
 }
 
-t_timestamp	get_millitime(void)
+t_timestamp	get_timestamp(void)
 {
 	struct timeval	tv;
 	t_timestamp		time_milli;

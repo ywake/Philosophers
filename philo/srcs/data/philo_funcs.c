@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/09 12:06:50 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/11 11:00:48 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/13 02:34:59 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	philo_eat(t_philo *philo)
 
 	if (philo == NULL)
 		return ;
-	time = get_millitime();
+	time = get_timestamp();
 	print(philo->table, "%zu %d is eating\n", time, philo->number);
 	set_last_eat(philo, time);
 	my_usleep(philo->table->settings->time_to_eat * 1000);
@@ -33,7 +33,7 @@ void	philo_sleep(t_philo *philo)
 {
 	if (philo == NULL)
 		return ;
-	print(philo->table, "%zu %d is sleeping\n", get_millitime(), philo->number);
+	print(philo->table, "%zu %d is sleeping\n", get_timestamp(), philo->number);
 	my_usleep(philo->table->settings->time_to_sleep * 1000);
 }
 
@@ -41,7 +41,7 @@ void	philo_think(t_philo *philo)
 {
 	if (philo == NULL)
 		return ;
-	print(philo->table, "%zu %d is thinking\n", get_millitime(), philo->number);
+	print(philo->table, "%zu %d is thinking\n", get_timestamp(), philo->number);
 }
 
 void	take_forks(t_philo *philo)
@@ -64,7 +64,7 @@ void	take_forks(t_philo *philo)
 				return ;
 		}
 		print(philo->table, "%zu %d has taken a fork\n",
-			get_millitime(), philo->number);
+			get_timestamp(), philo->number);
 		i++;
 	}
 }
