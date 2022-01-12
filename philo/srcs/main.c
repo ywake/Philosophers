@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/05 21:17:09 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/11 12:11:54 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/12 13:56:54 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 #include "utils.h"
 
 t_philo	**initialize(int argc, char *argv[]);
-int		clean(t_philo **philos);
+int		my_abort(t_philo **philos, pthread_t *observer, bool detach);
 void	*routine(void *arg);
 void	*observe(void *arg);
 
@@ -34,17 +34,18 @@ int	main(int argc, char *argv[])
 	if (philos == NULL)
 		return (1);
 	if (pthread_create(&observer, NULL, observe, philos))
-		return (clean(philos));
+		return (my_abort(philos, NULL, false));
+	i = -1;
+	while (++i < philos[0]->table->length)
+		if (pthread_create(&philos[i]->thread, NULL, routine, philos[i]))
+			return (my_abort(philos, &observer, true));
+	if (pthread_join(observer, NULL))
+		return (my_abort(philos, &observer, true));
 	i = 0;
 	while (i < philos[0]->table->length)
-	{
-		if (pthread_create(&philos[i]->thread, NULL, routine, philos[i]))
-			return (clean(philos));
-		if (pthread_detach(philos[i++]->thread))
-			return (clean(philos));
-	}
-	pthread_join(observer, NULL);
-	clean(philos);
+		if (pthread_join(philos[i++]->thread, NULL))
+			return (my_abort(philos, NULL, true));
+	my_abort(philos, NULL, false);
 	return (0);
 }
 
@@ -64,8 +65,18 @@ t_philo	**initialize(int argc, char *argv[])
 	return (philos);
 }
 
-int	clean(t_philo **philos)
+int	my_abort(t_philo **philos, pthread_t *observer, bool detach)
 {
+	int	i;
+
+	if (detach)
+	{
+		if (observer != NULL)
+			pthread_detach(*observer);
+		i = 0;
+		while (i < philos[0]->table->length)
+			pthread_detach(philos[i++]->thread);
+	}
 	del_settings(philos[0]->table->settings);
 	del_table(philos[0]->table);
 	del_philosophers(philos);
