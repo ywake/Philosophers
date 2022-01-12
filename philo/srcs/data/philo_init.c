@@ -6,13 +6,14 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/05 22:41:28 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/11 11:41:02 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/12 13:14:15 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosopher.h"
 
 #include <stdlib.h>
+#include <stdio.h>
 #include "table.h"
 #include "utils.h"
 
@@ -89,7 +90,9 @@ bool	is_died(t_philo	*philo)
 	if (now - last_eat(philo) > philo->table->settings->time_to_die)
 	{
 		set_finish(philo->table);
-		print(philo->table, "%zu %d died\n", now, philo->number);
+		pthread_mutex_lock(&philo->table->printf_mutex);
+		printf("%zu %d died\n", now, philo->number + 1);
+		pthread_mutex_unlock(&philo->table->printf_mutex);
 		return (true);
 	}
 	return (false);

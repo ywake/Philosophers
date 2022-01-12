@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/06 22:31:02 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/11 11:52:16 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/12 13:04:47 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,6 @@ void	print(t_table *table, const char *fmt, t_timestamp time, int number)
 	if (is_finish(table))
 		return ;
 	pthread_mutex_lock(&table->printf_mutex);
-	printf(fmt, time, number);
+	printf(fmt, time, number + 1);
 	pthread_mutex_unlock(&table->printf_mutex);
 }
