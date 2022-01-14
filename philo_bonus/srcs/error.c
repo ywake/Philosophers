@@ -6,13 +6,15 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/13 02:37:05 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/13 17:59:27 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/14 14:54:26 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "utils.h"
 
 #include <stdlib.h>
+#include <errno.h>
+#include <signal.h>
 #include "my_semaphore.h"
 
 #include<stdio.h>
@@ -22,6 +24,8 @@ void	my_exit(int status)
 	sem_unlink(FINS_SEM);
 	sem_unlink(LIVES_SEM);
 	sem_unlink(PRINT_SEM);
+	if (errno == EAGAIN)
+		kill(0, SIGKILL);
 	exit(status);
 }
 

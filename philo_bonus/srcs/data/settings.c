@@ -6,14 +6,21 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/05 21:18:46 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/13 02:47:16 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/14 15:45:42 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "settings.h"
 
 #include <stdlib.h>
+#include <semaphore.h>
 #include "utils.h"
+
+#define MAX_PHILOS (100)
+
+#ifdef __lilsnux__
+# define SEM_VALUE_MAX (32767)
+#endif
 
 t_settings	*init_settings(int argc, char *argv[])
 {
@@ -35,7 +42,7 @@ t_settings	*init_settings(int argc, char *argv[])
 		settings->target_num_of_eat = -1;
 	else
 		settings->target_num_of_eat = ft_atoi(argv[5]);
-	if (settings->num_of_philos < 1)
+	if (settings->num_of_philos < 1 || SEM_VALUE_MAX < settings->num_of_philos)
 		exit(1);
 	return (settings);
 }
