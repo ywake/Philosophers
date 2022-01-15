@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/13 02:37:05 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/14 14:54:26 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/15 17:08:19 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	my_exit(int status)
 	sem_unlink(FINS_SEM);
 	sem_unlink(LIVES_SEM);
 	sem_unlink(PRINT_SEM);
-	if (errno == EAGAIN)
+	if (errno == EAGAIN || errno == ENOMEM || errno == EINVAL || errno == EINTR)
 		kill(0, SIGKILL);
 	exit(status);
 }

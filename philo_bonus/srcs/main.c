@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/13 02:25:16 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/13 17:54:59 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/15 17:06:01 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <signal.h>
+#include <errno.h>
 #include "settings.h"
 #include "table.h"
 #include "philosopher.h"
@@ -32,8 +33,8 @@ int	main(int argc, char *argv[])
 	t_philo	**philos;
 	pid_t	*pids;
 	int		i;
-	int		status;
 
+	errno = 0;
 	philos = initialize(argc, argv);
 	pids = (pid_t *)catch_null(
 			malloc(sizeof(pid_t) * (philos[0]->table->length + 1)));
@@ -49,7 +50,7 @@ int	main(int argc, char *argv[])
 	i = -1;
 	while (++i < philos[0]->table->length + 1)
 	{
-		waitpid(-1, &status, 0);
+		catch_err(waitpid(-1, NULL, 0));
 		if (i == 0)
 			kill_all_child(pids, philos[0]->table->length + 1);
 	}
