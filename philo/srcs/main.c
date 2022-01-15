@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/05 21:17:09 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/12 13:56:54 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/15 15:59:09 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,14 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <string.h>
 #include "settings.h"
 #include "philosopher.h"
 #include "table.h"
 #include "utils.h"
 
 t_philo	**initialize(int argc, char *argv[]);
-int		my_abort(t_philo **philos, pthread_t *observer, bool detach);
+int		my_abort(t_philo **philos, pthread_t *observer, bool collect_threads);
 void	*routine(void *arg);
 void	*observe(void *arg);
 
@@ -33,6 +34,7 @@ int	main(int argc, char *argv[])
 	philos = initialize(argc, argv);
 	if (philos == NULL)
 		return (1);
+	memset(&observer, 0, sizeof(pthread_t));
 	if (pthread_create(&observer, NULL, observe, philos))
 		return (my_abort(philos, NULL, false));
 	i = -1;
@@ -65,17 +67,17 @@ t_philo	**initialize(int argc, char *argv[])
 	return (philos);
 }
 
-int	my_abort(t_philo **philos, pthread_t *observer, bool detach)
+int	my_abort(t_philo **philos, pthread_t *observer, bool collect_threads)
 {
 	int	i;
 
-	if (detach)
+	if (collect_threads)
 	{
 		if (observer != NULL)
-			pthread_detach(*observer);
+			pthread_join(*observer, NULL);
 		i = 0;
 		while (i < philos[0]->table->length)
-			pthread_detach(philos[i++]->thread);
+			pthread_join(philos[i++]->thread, NULL);
 	}
 	del_settings(philos[0]->table->settings);
 	del_table(philos[0]->table);

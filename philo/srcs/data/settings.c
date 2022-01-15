@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/05 21:18:46 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/11 11:21:42 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/15 02:09:11 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 #include <stdlib.h>
 #include "utils.h"
+
+#define MAX_THREADS (32765)
 
 t_settings	*init_settings(int argc, char *argv[])
 {
@@ -37,7 +39,7 @@ t_settings	*init_settings(int argc, char *argv[])
 		settings->target_num_of_eat = -1;
 	else
 		settings->target_num_of_eat = ft_atoi(argv[5]);
-	if (settings->num_of_philos < 1)
+	if (settings->num_of_philos < 1 || MAX_THREADS < settings->num_of_philos)
 		return (del_settings(settings));
 	return (settings);
 }
