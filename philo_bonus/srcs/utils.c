@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/05 21:26:51 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/13 16:51:36 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/16 10:47:15 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,15 @@
 #include <signal.h>
 #include "types.h"
 
-int	ft_atoi(const char *str)
+int	ft_atoi(const char *str, bool *error)
 {
 	int	sign;
 	int	value;
 
+	if (error != NULL)
+		*error = (str == NULL);
+	if (str == NULL)
+		return (-1);
 	sign = 1;
 	value = 0;
 	while (('\t' <= *str && *str <= '\r') || *str == ' ')
@@ -30,7 +34,11 @@ int	ft_atoi(const char *str)
 	if (*str == '+' || *str == '-')
 		sign = 44 - *str++;
 	while (*str && '0' <= *str && *str <= '9')
+	{
 		value = value * 10 + (*str++ - '0');
+		if (value < 0 && error != NULL)
+			*error = true;
+	}
 	return (sign * value);
 }
 
