@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/06 22:31:02 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/12 13:04:47 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/16 12:37:00 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,8 @@ bool	is_finish(t_table *table)
 {
 	bool	is_finish;
 
+	if (table == NULL)
+		return (true);
 	pthread_mutex_lock(&table->mutex);
 	is_finish = table->is_finish;
 	pthread_mutex_unlock(&table->mutex);

@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/05 21:17:09 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/16 11:45:04 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/18 11:54:34 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,13 +39,13 @@ int	main(int argc, char *argv[])
 		return (my_abort(philos, NULL, false));
 	i = -1;
 	while (++i < philos[0]->table->length)
-		if (pthread_create(&philos[i]->thread, NULL, routine, philos[i]))
+		if (pthread_create(&philos[i]->thread, NULL, routine, &philos[i]))
 			return (my_abort(philos, &observer, true));
 	if (pthread_join(observer, NULL))
 		return (my_abort(philos, &observer, true));
 	i = 0;
 	while (i < philos[0]->table->length)
-		if (pthread_join(philos[i++]->thread, NULL))
+		if (pthread_detach(philos[i++]->thread))
 			return (my_abort(philos, NULL, true));
 	my_abort(philos, NULL, false);
 	return (0);
@@ -74,13 +74,16 @@ int	my_abort(t_philo **philos, pthread_t *observer, bool collect_threads)
 	if (collect_threads)
 	{
 		if (observer != NULL)
-			pthread_join(*observer, NULL);
+			pthread_detach(*observer);
 		i = 0;
 		while (i < philos[0]->table->length)
-			pthread_join(philos[i++]->thread, NULL);
+			pthread_detach(philos[i++]->thread);
 	}
-	del_settings(philos[0]->table->settings);
+	philos[0]->table->settings = del_settings(philos[0]->table->settings);
 	del_table(philos[0]->table);
+	i = 0;
+	while (philos[i])
+		philos[i++]->table = NULL;
 	del_philosophers(philos);
 	return (1);
 }
@@ -89,19 +92,19 @@ typedef void	(*t_func)(t_philo *philo);
 
 void	*routine(void *arg)
 {
-	t_philo	*philo;
+	t_philo	**philo;
 	t_func	*funcs;
 	int		i;
 
-	philo = (t_philo *)arg;
+	philo = (t_philo **)arg;
 	funcs = (t_func []){
 		take_forks, philo_eat, return_forks, philo_sleep, philo_think};
-	if (philo->number % 2)
+	if ((*philo)->number % 2)
 		my_usleep(250);
 	i = 0;
-	while (is_finish(philo->table) == false)
+	while (*philo && (*philo)->table && !is_finish((*philo)->table))
 	{
-		funcs[i](philo);
+		funcs[i](*philo);
 		i = (i + 1) % 5;
 	}
 	return (NULL);
@@ -120,7 +123,7 @@ void	*observe(void *arg)
 		flg_finish = true;
 		while (i < philos[0]->table->length)
 		{
-			if (is_died(philos[i]))
+			if (philos[i] == NULL || is_died(philos[i]))
 				return (NULL);
 			if (flg_finish && left_num_of_eat(philos[i]) != 0)
 				flg_finish = false;
