@@ -46,39 +46,3 @@ Linux_leak: $(LIBFT) $(OBJS)
 leak: FORCE $(shell uname)_leak
 
 FORCE:
-
-CXX			:= clang++
-CXXFLAG		:= -std=c++11 -DDEBUG -g -fsanitize=integer -fsanitize=address -Wno-writable-strings
-gTestDir	:= ../gtest
-gVersion	:= release-1.11.0
-gTestVer	:= googletest-$(gVersion)
-gTest		:= $(gTestDir)/gtest $(gTestDir)/$(gTestVer)
-
-TESTDIR		:= ./tests/
-TESTSRCS_C	:= $(filter-out main.c,$(SRCS))
-TESTSRCS_CPP:= $(wildcard $(TESTDIR)*.cpp)
-TESTOBJS	:= $(TESTSRCS_C:%.c=$(SRCDIR)%.o) \
-				$(TESTSRCS_CPP:%.cpp=%.o)
-
-%.o: %.cpp
-	$(CXX) $(CXXFLAG) -I$(gTestDir) $(INCLUDE) -c $< -o $@
-
-$(gtest):
-	mTdir -p $(dir $(gTestDir))
-	curl -OL https://github.com/google/googletest/archive/refs/tags/$(gVersion).tar.gz
-	tar -xvzf $(gVersion).tar.gz $(gTestVer)
-	$(RM) $(gVersion).tar.gz
-	python $(gTestVer)/googletest/scripts/fuse_gtest_files.py $(TtestDir)
-	mT $(gTestVer) $(gTestDir)
-
-test: FORCE $(gtest) $(TESTOBJS)
-	@$(CXX) $(CXXFLAG) \
-		$(TESTOBJS) \
-		$(gTestDir)/$(gTestVer)/googletest/src/gtest_main.cc \
-		$(gTestDir)/gtest/gtest-all.cc \
-		-I$(gTestDir) $(INCLUDE) $(LIBS) -o tester
-	./tester
-	@$(RM) -r tester tester.dSYM
-
-test_clean: FORCE
-	$(RM) $(TESTOBJS)
