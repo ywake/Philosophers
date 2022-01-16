@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/05 21:17:09 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/15 15:59:09 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/16 11:45:04 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ t_philo	**initialize(int argc, char *argv[])
 	t_table		*table;
 	t_philo		**philos;
 
-	if (argc != 5 && argc != 6)
+	if (validity_check(argc, argv) == false)
 		return (NULL);
 	settings = init_settings(argc, argv);
 	table = init_table(settings);
