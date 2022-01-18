@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/09 01:38:15 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/11 11:32:13 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/18 14:19:36 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ t_fork	*del_fork(t_fork *fork)
 	return (NULL);
 }
 
+// has lock
 bool	_take(t_fork *fork)
 {
 	bool	there_is_a_fork;
@@ -51,6 +52,7 @@ bool	_take(t_fork *fork)
 	return (there_is_a_fork);
 }
 
+// has lock
 void	_return(t_fork *fork)
 {
 	if (fork == NULL)

@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/05 22:41:28 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/15 15:36:16 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/18 14:18:30 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,17 +84,24 @@ t_philo	**del_philosophers(t_philo **philos)
 	return (NULL);
 }
 
-bool	is_died(t_philo	*philo)
+// has lock
+bool	is_died(t_philo	**philo)
 {
 	t_timestamp	now;
+	t_timestamp	past_time;
 
 	now = get_timestamp();
-	if (now - last_eat(philo) > philo->table->settings->time_to_die)
+	past_time = now - last_eat(philo);
+	if (!*philo || !(*philo)->table || !(*philo)->table->settings)
+		return (true);
+	if (past_time > (*philo)->table->settings->time_to_die)
 	{
-		set_finish(philo->table);
-		pthread_mutex_lock(&philo->table->printf_mutex);
-		printf("%zu %d died\n", now, philo->number + 1);
-		pthread_mutex_unlock(&philo->table->printf_mutex);
+		set_finish((*philo)->table);
+		if (*philo == NULL || (*philo)->table == NULL)
+			return (true);
+		pthread_mutex_lock(&(*philo)->table->printf_mutex);
+		printf("%zu %d died\n", now, (*philo)->number + 1);
+		pthread_mutex_unlock(&(*philo)->table->printf_mutex);
 		return (true);
 	}
 	return (false);

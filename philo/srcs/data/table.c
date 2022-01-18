@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/06 22:31:02 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/16 12:37:00 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/18 14:22:55 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,13 +71,17 @@ t_table	*del_table(t_table *table)
 	return (NULL);
 }
 
+// has lock
 void	set_finish(t_table *table)
 {
+	if (table == NULL)
+		return ;
 	pthread_mutex_lock(&table->mutex);
 	table->is_finish = true;
 	pthread_mutex_unlock(&table->mutex);
 }
 
+// has lock
 bool	is_finish(t_table *table)
 {
 	bool	is_finish;
@@ -90,9 +94,10 @@ bool	is_finish(t_table *table)
 	return (is_finish);
 }
 
+// has lock
 void	print(t_table *table, const char *fmt, t_timestamp time, int number)
 {
-	if (is_finish(table))
+	if (table == NULL || is_finish(table))
 		return ;
 	pthread_mutex_lock(&table->printf_mutex);
 	printf(fmt, time, number + 1);
