@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/05 21:17:09 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/18 14:14:25 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/20 11:39:34 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 #include "utils.h"
 
 t_philo	**initialize(int argc, char *argv[]);
-int		my_abort(t_philo **philos, pthread_t *observer, bool collect_threads);
+int		my_abort(t_philo ***philos, pthread_t *observer, bool collect_threads);
 void	*routine(void *arg);
 void	*observe(void *arg);
 
@@ -36,18 +36,18 @@ int	main(int argc, char *argv[])
 		return (1);
 	memset(&observer, 0, sizeof(pthread_t));
 	if (pthread_create(&observer, NULL, observe, philos))
-		return (my_abort(philos, NULL, false));
+		return (my_abort(&philos, NULL, false));
 	i = -1;
 	while (++i < philos[0]->table->length && !is_finish(philos[0]->table))
 		if (pthread_create(&philos[i]->thread, NULL, routine, &philos[i]))
-			return (my_abort(philos, &observer, true));
+			return (my_abort(&philos, &observer, true));
 	if (pthread_join(observer, NULL))
-		return (my_abort(philos, &observer, true));
+		return (my_abort(&philos, &observer, true));
 	i = 0;
 	while (i < philos[0]->table->length)
 		if (pthread_detach(philos[i++]->thread))
-			return (my_abort(philos, NULL, false));
-	my_abort(philos, NULL, false);
+			return (my_abort(&philos, NULL, false));
+	my_abort(&philos, NULL, false);
 	return (0);
 }
 
@@ -67,7 +67,7 @@ t_philo	**initialize(int argc, char *argv[])
 	return (philos);
 }
 
-int	my_abort(t_philo **philos, pthread_t *observer, bool collect_threads)
+int	my_abort(t_philo ***philos, pthread_t *observer, bool collect_threads)
 {
 	int	i;
 
@@ -76,15 +76,15 @@ int	my_abort(t_philo **philos, pthread_t *observer, bool collect_threads)
 		if (observer != NULL)
 			pthread_detach(*observer);
 		i = 0;
-		while (i < philos[0]->table->length)
-			pthread_detach(philos[i++]->thread);
+		while (i < (*philos)[0]->table->length)
+			pthread_detach((*philos)[i++]->thread);
 	}
-	philos[0]->table->settings = del_settings(philos[0]->table->settings);
-	del_table(philos[0]->table);
+	(*philos)[0]->table->settings = del_settings((*philos)[0]->table->settings);
+	del_table((*philos)[0]->table);
 	i = 0;
-	while (philos[i])
-		philos[i++]->table = NULL;
-	del_philosophers(philos);
+	while ((*philos)[i])
+		(*philos)[i++]->table = NULL;
+	*philos = del_philosophers(*philos);
 	return (1);
 }
 
