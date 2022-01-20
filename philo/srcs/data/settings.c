@@ -6,13 +6,14 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/05 21:18:46 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/16 11:51:24 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/18 18:38:31 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "settings.h"
 
 #include <stdlib.h>
+#include <limits.h>
 #include "utils.h"
 
 #define MAX_THREADS (32765)
@@ -45,7 +46,7 @@ bool	validity_check(int argc, char *argv[])
 		if (i == TARGET_NUM_OF_EAT && input == 0)
 			return (false);
 		if (i != NUM_OF_PHILOS && i != TARGET_NUM_OF_EAT
-			&& (unsigned int)input > INT32_MAX / 1000)
+			&& (unsigned int)input > INT_MAX / 1000)
 			return (false);
 		i++;
 	}
