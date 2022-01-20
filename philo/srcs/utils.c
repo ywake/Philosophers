@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/05 21:26:51 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/16 10:42:21 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/20 13:48:32 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,4 +78,10 @@ void	my_usleep(t_timestamp sleep_usec)
 		usleep(lefttime / 2);
 		lefttime = endtime - get_utime();
 	}
+}
+
+void	*set(void	**dest, void *srcs)
+{
+	*dest = srcs;
+	return (srcs);
 }

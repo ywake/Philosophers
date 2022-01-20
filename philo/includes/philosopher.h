@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/05 22:42:07 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/18 12:27:59 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/20 14:10:22 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,22 @@
 # include "table.h"
 # include "types.h"
 
+enum	e_philo_mutex
+{
+	LAST_EAT,
+	LEFT_NUM_OF_EAT,
+	TABLE,
+	PHILO_MUTEX_LEN,
+};
+
 typedef struct s_philo
 {
 	int				number;
 	t_table			*table;
 	pthread_t		thread;
-	pthread_mutex_t	mutex;
 	t_timestamp		last_eat;
 	int				left_num_of_eat;
+	pthread_mutex_t	mutexes[PHILO_MUTEX_LEN];
 
 }	t_philo;
 
@@ -42,6 +50,7 @@ void		take_forks(t_philo **philo);
 void		return_forks(t_philo **philo);
 
 bool		is_died(t_philo	**philo);
+t_table		*table(t_philo **philo);
 t_timestamp	last_eat(t_philo **philo);
 void		set_last_eat(t_philo **philo, t_timestamp last_eat);
 int			left_num_of_eat(t_philo **philo);

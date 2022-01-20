@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/05 21:17:09 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/20 11:39:34 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/20 14:32:24 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,11 +79,19 @@ int	my_abort(t_philo ***philos, pthread_t *observer, bool collect_threads)
 		while (i < (*philos)[0]->table->length)
 			pthread_detach((*philos)[i++]->thread);
 	}
+	pthread_mutex_lock(&(*philos)[0]->table->mutexes[SETTINGS]);
 	(*philos)[0]->table->settings = del_settings((*philos)[0]->table->settings);
+	pthread_mutex_unlock(&(*philos)[0]->table->mutexes[SETTINGS]);
+	i = 0;
+	while ((*philos)[i])
+		pthread_mutex_lock(&(*philos)[i++]->mutexes[TABLE]);
 	del_table((*philos)[0]->table);
 	i = 0;
 	while ((*philos)[i])
-		(*philos)[i++]->table = NULL;
+	{
+		(*philos)[i]->table = NULL;
+		pthread_mutex_unlock(&(*philos)[i++]->mutexes[TABLE]);
+	}
 	*philos = del_philosophers(*philos);
 	return (1);
 }
@@ -102,7 +110,7 @@ void	*routine(void *arg)
 	if (*philo && (*philo)->number % 2)
 		my_usleep(250);
 	i = 0;
-	while (*philo && (*philo)->table && !is_finish((*philo)->table))
+	while (*philo && (*philo)->table && !is_finish(table(philo)))
 	{
 		funcs[i](philo);
 		i = (i + 1) % 5;

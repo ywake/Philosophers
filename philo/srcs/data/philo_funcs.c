@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/09 12:06:50 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/18 14:17:16 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/20 14:35:48 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@ void	philo_eat(t_philo **philo)
 	if (*philo)
 		print((*philo)->table, "%zu %d is eating\n", time, (*philo)->number);
 	set_last_eat(philo, time);
-	if (*philo && (*philo)->table && (*philo)->table->settings)
-		my_usleep((*philo)->table->settings->time_to_eat * 1000);
+	if (*philo && (*philo)->table)
+		my_usleep(time_to_eat((*philo)->table) * 1000);
 	decrement_left_num_of_eat(philo);
 }
 
@@ -36,8 +36,8 @@ void	philo_sleep(t_philo **philo)
 	format_str = "%zu %d is sleeping\n";
 	if (*philo)
 		print((*philo)->table, format_str, get_timestamp(), (*philo)->number);
-	if (*philo && (*philo)->table && (*philo)->table->settings)
-		my_usleep((*philo)->table->settings->time_to_sleep * 1000);
+	if (*philo && (*philo)->table)
+		my_usleep(time_to_sleep((*philo)->table) * 1000);
 }
 
 void	philo_think(t_philo **philo)
@@ -68,7 +68,8 @@ void	take_forks(t_philo **philo)
 			&& _take((*philo)->table->forks[fork_num]) == false)
 		{
 			my_usleep(1000);
-			if (*philo == NULL || is_finish((*philo)->table))
+			if (*philo == NULL
+				 || is_finish(table(philo)))
 				return ;
 		}
 		if (*philo)

@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/05 22:41:28 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/18 14:18:30 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/20 14:23:37 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 t_philo	*init_philosopher(t_table *table, int philo_number)
 {
 	t_philo	*philo;
+	int		i;
 
 	philo = (t_philo *)malloc(sizeof(t_philo));
 	if (philo == NULL)
@@ -30,18 +31,27 @@ t_philo	*init_philosopher(t_table *table, int philo_number)
 	philo->left_num_of_eat = table->settings->target_num_of_eat;
 	memset(&philo->thread, 0, sizeof(pthread_t));
 	philo->last_eat = get_timestamp();
-	if (pthread_mutex_init(&philo->mutex, NULL))
-		return (del_philosopher(philo));
+	i = 0;
+	while (i < PHILO_MUTEX_LEN)
+		if (pthread_mutex_init(&philo->mutexes[i++], NULL))
+			return (del_philosopher(philo));
 	return (philo);
 }
 
 t_philo	*del_philosopher(t_philo *philo)
 {
+	int	i;
+
 	if (philo == NULL)
 		return (NULL);
-	pthread_mutex_lock(&philo->mutex);
-	pthread_mutex_unlock(&philo->mutex);
-	pthread_mutex_destroy(&philo->mutex);
+	i = 0;
+	while (i < PHILO_MUTEX_LEN)
+	{
+		pthread_mutex_lock(&philo->mutexes[i]);
+		pthread_mutex_unlock(&philo->mutexes[i]);
+		pthread_mutex_destroy(&philo->mutexes[i]);
+		i++;
+	}
 	free(philo);
 	return (NULL);
 }
@@ -99,9 +109,9 @@ bool	is_died(t_philo	**philo)
 		set_finish((*philo)->table);
 		if (*philo == NULL || (*philo)->table == NULL)
 			return (true);
-		pthread_mutex_lock(&(*philo)->table->printf_mutex);
+		pthread_mutex_lock(&(*philo)->table->mutexes[PRINTF]);
 		printf("%zu %d died\n", now, (*philo)->number + 1);
-		pthread_mutex_unlock(&(*philo)->table->printf_mutex);
+		pthread_mutex_unlock(&(*philo)->table->mutexes[PRINTF]);
 		return (true);
 	}
 	return (false);
