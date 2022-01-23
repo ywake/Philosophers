@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/20 16:05:04 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/23 12:17:54 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/23 19:09:04 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,20 +82,18 @@ t_philo	**del_philosophers(t_philo **philos)
 	return (NULL);
 }
 
-t_timestamp	philo_eat_done(t_philo **philo)
+t_timestamp	philo_eat_done(t_philo *philo)
 {
 	int	i;
 	int	fork_num;
 
-	if (!*philo)
-		return (0);
-	(*philo)->left_num_of_eat--;
+	philo->left_num_of_eat--;
 	i = 0;
-	while (i < 2 && (*philo)->table && (*philo)->table->forks)
+	while (i < 2)
 	{
-		fork_num = ((*philo)->number + i) % (*philo)->table->length;
-		_return((*philo)->table->forks[fork_num]);
+		fork_num = (philo->number + i) % philo->table->length;
+		_return(philo->table->forks[fork_num]);
 		i++;
 	}
-	return (10);
+	return (20);
 }
