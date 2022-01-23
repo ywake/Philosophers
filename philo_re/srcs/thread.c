@@ -6,52 +6,34 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/20 16:42:12 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/21 16:09:48 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/23 12:40:01 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "thread.h"
 
 #include <stdio.h>
+#include "philosopher.h"
 #include "table.h"
 
-// Returns 0 If seccess , -1 otherwise.
-int	run_threads(t_table **table)
-{
-	int	i;
-
-	if (pthread_create(&(*table)->observer, NULL, observe, table))
-		return (-1);
-	i = 0;
-	while (i < (*table)->length && !is_finish(*table))
-	{
-		pthread_mutex_lock(&(*table)->mutexes[TABLE_TMP_PHILOS_NUM]);
-		(*table)->tmp_philos_number = i;
-		if (pthread_create(
-				&(*table)->philos[i++]->thread, NULL, routine, table))
-			return (-1);
-	}
-	return (0);
-}
-
-// has lock
-bool	is_died(t_table **table, t_philo **philo)
+// need table lock
+bool	is_died(t_philo **philo)
 {
 	t_timestamp	now;
 	t_timestamp	past_time;
 
+	if (*philo == NULL)
+		return (false);
 	now = get_timestamp();
-	past_time = now - get_last_eat(philo);
-	if (*table == NULL || (*table)->settings == NULL)
+	past_time = now - (*philo)->last_eat;
+	if (*philo == NULL || (*philo)->settings == NULL)
 		return (true);
-	if (past_time > (*table)->settings->time_to_die)
+	if (past_time > (*philo)->settings->time_to_die)
 	{
-		set_finish(*table);
-		if (*table == NULL)
+		if ((*philo)->table == NULL)
 			return (true);
-		pthread_mutex_lock(&(*table)->mutexes[TABLE_PRINTF]);
+		(*philo)->table->finish = true;
 		printf("%zu %d died\n", now, (*philo)->number + 1);
-		pthread_mutex_unlock(&(*table)->mutexes[TABLE_PRINTF]);
 		return (true);
 	}
 	return (false);
@@ -59,53 +41,61 @@ bool	is_died(t_table **table, t_philo **philo)
 
 void	*observe(void *arg)
 {
-	t_table	**table;
+	t_philo	**philos;
 	int		i;
-	bool	flg_finish;
+	bool	is_enough;
 
-	table = (t_table **)arg;
-	while (*table && !is_finish(*table))
+	philos = (t_philo **)arg;
+	while (philos[0] && !is_finish(&philos[0]->table))
 	{
+		pthread_mutex_lock(&philos[0]->table->mutex);
+		is_enough = true;
 		i = 0;
-		flg_finish = true;
-		while (*table && i < (*table)->length)
+		while (i < philos[0]->settings->num_of_philos)
 		{
-			if ((*table)->philos[i] == NULL
-				|| is_died(table, &(*table)->philos[i]))
-				return (NULL);
-			if (flg_finish && get_left_num_of_eat(&(*table)->philos[i]) != 0)
-				flg_finish = false;
+			if (is_died(&philos[i]))
+				break ;
+			if (is_enough && philos[i]->left_num_of_eat != 0)
+				is_enough = false;
 			i++;
 		}
-		if (flg_finish && *table)
-			set_finish(*table);
-		my_usleep(300);
+		if (is_enough && philos[0])
+			philos[0]->table->finish = true;
+		pthread_mutex_unlock(&philos[0]->table->mutex);
+		my_usleep(10);
 	}
 	return (NULL);
 }
 
-typedef void	(*t_func)(t_table **table, int philo_number);
+typedef t_timestamp	(*t_func)(t_philo **philo);
 
 void	*routine(void *arg)
 {
-	t_table	**table;
-	t_func	*funcs;
-	int		i;
-	int		philo_number;
+	t_philo		**philo;
+	t_func		*funcs;
+	int			i;
+	t_timestamp	time;
 
-	table = (t_table **)arg;
-	philo_number = (*table)->tmp_philos_number;
-	pthread_mutex_unlock(&(*table)->mutexes[TABLE_TMP_PHILOS_NUM]);
-	funcs = (t_func []){
-		take_forks, philo_eat, return_forks, philo_sleep, philo_think
-	};
-	if (philo_number % 2)
+	philo = (t_philo **)arg;
+	funcs = (t_func []){take_right_fork, take_left_fork, philo_eat,
+		philo_eat_done, philo_sleep, philo_think};
+	if ((*philo) && (*philo)->number % 2)
 		my_usleep(250);
 	i = 0;
-	while (*table && !is_finish(*table))
+	while (*philo)
 	{
-		funcs[i](table, philo_number);
-		i = (i + 1) % 5;
+		pthread_mutex_lock(&(*philo)->table->mutex);
+		if ((*philo)->table->finish)
+		{
+			pthread_mutex_unlock(&(*philo)->table->mutex);
+			break ;
+		}
+		if (*philo)
+			time = funcs[i](philo);
+		if (*philo && (*philo)->table)
+			pthread_mutex_unlock(&(*philo)->table->mutex);
+		my_usleep(time);
+		i = (i + 1) % 6;
 	}
 	return (NULL);
 }

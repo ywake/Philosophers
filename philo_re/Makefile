@@ -9,12 +9,12 @@ LIBS	:= -lpthread
 CFLAGS	:= -g -Wall -Werror -Wextra $(INCLUDE)
 VPATH	:= srcs/
 
-SRCS	:= main.c thread.c routine.c \
+SRCS	:= main.c thread.c \
 			utils/ft_atoi.c utils/ft_calloc.c utils/ft_set.c utils/timestamp.c \
 			data/settings.c \
-			data/table.c data/table_vars.c \
-			data/fork.c data/fork_funcs.c\
-			data/philo.c data/philo_vars.c
+			data/fork.c data/fork_funcs.c \
+			data/table.c \
+			data/philo.c data/philo_funcs.c
 SRCDIRS	 = $(call uniq, $(filter-out ./, $(dir $(SRCS))))
 
 OBJDIR	:= objs/

@@ -6,53 +6,44 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/20 16:05:04 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/20 18:19:43 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/23 12:17:54 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosopher.h"
 
 #include <stdlib.h>
-#include <string.h>
 
-t_philo	*init_philosopher(t_settings *settings, int philo_number)
+#include "settings.h"
+#include "table.h"
+#include "utils.h"
+
+t_philo	*init_philosopher(t_settings *setting, t_table *table, int philo_number)
 {
 	t_philo	*philo;
-	int		i;
 
-	philo = (t_philo *)malloc(sizeof(t_philo));
+	philo = (t_philo *)ft_calloc(1, sizeof(t_philo));
 	if (philo == NULL)
 		return (NULL);
+	philo->settings = setting;
+	philo->table = table;
 	philo->number = philo_number;
-	philo->left_num_of_eat = settings->target_num_of_eat;
-	memset(&philo->thread, 0, sizeof(pthread_t));
+	philo->left_num_of_eat = setting->target_num_of_eat;
 	philo->last_eat = get_timestamp();
-	i = 0;
-	while (i < PHILO_MUTEX_LEN)
-		if (pthread_mutex_init(&philo->mutexes[i++], NULL))
-			return (del_philosopher(philo));
 	return (philo);
 }
 
 t_philo	*del_philosopher(t_philo *philo)
 {
-	int	i;
-
 	if (philo == NULL)
 		return (NULL);
-	i = 0;
-	while (i < PHILO_MUTEX_LEN)
-	{
-		pthread_mutex_lock(&philo->mutexes[i]);
-		pthread_mutex_unlock(&philo->mutexes[i]);
-		pthread_mutex_destroy(&philo->mutexes[i]);
-		i++;
-	}
+	philo->settings = NULL;
+	philo->table = NULL;
 	free(philo);
 	return (NULL);
 }
 
-t_philo	**init_philosophers(t_settings *settings)
+t_philo	**init_philosophers(t_settings *settings, t_table *table)
 {
 	t_philo	**philos;
 	int		i;
@@ -66,7 +57,7 @@ t_philo	**init_philosophers(t_settings *settings)
 	i = 0;
 	while (i < settings->num_of_philos)
 	{
-		philos[i] = init_philosopher(settings, i);
+		philos[i] = init_philosopher(settings, table, i);
 		if (philos[i] == NULL)
 			return (del_philosophers(philos));
 		i++;
@@ -89,4 +80,22 @@ t_philo	**del_philosophers(t_philo **philos)
 	}
 	free(philos);
 	return (NULL);
+}
+
+t_timestamp	philo_eat_done(t_philo **philo)
+{
+	int	i;
+	int	fork_num;
+
+	if (!*philo)
+		return (0);
+	(*philo)->left_num_of_eat--;
+	i = 0;
+	while (i < 2 && (*philo)->table && (*philo)->table->forks)
+	{
+		fork_num = ((*philo)->number + i) % (*philo)->table->length;
+		_return((*philo)->table->forks[fork_num]);
+		i++;
+	}
+	return (10);
 }
