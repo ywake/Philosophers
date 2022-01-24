@@ -1,21 +1,45 @@
+#############
+# Functions #
+#############
+
+# define uniq
+# 	$(eval seen :=)
+# 	$(foreach _,$1,$(if $(filter $_, ${seen}),, $(eval seen += $_)))
+# 	$(seen)
+# endef
+
+uniq = $(if $1,$(firstword $1) $(call uniq,$(filter-out $(firstword $1),$1)))
+
+#############
+# Variables #
+#############
+
 NAME	:= philo
 CC		:= gcc
 INCLUDE	:= -I./includes
 LIBS	:= -lpthread
 CFLAGS	:= -g -Wall -Werror -Wextra $(INCLUDE)
-VPATH	:= $(SRCDIR) $(TESTDIR)
+VPATH	:= srcs/
 
-SRCDIR	:= srcs/
-SRCS	:= main.c utils.c \
-			data/settings.c data/table.c data/table_vars.c data/fork.c \
-			data/philo_init.c data/philo_funcs.c data/philo_vars.c
-OBJS	:= $(SRCS:%.c=$(SRCDIR)%.o)
-DSTRCTR	:= ./tests/destructor.c
+SRCS	:= main.c thread.c \
+			utils/ft_atoi.c utils/ft_calloc.c utils/ft_set.c utils/timestamp.c \
+			data/settings.c \
+			data/fork.c data/fork_funcs.c \
+			data/table.c \
+			data/philo.c data/philo_funcs.c
+SRCDIRS	:= $(call uniq, $(filter-out ./, $(dir $(SRCS))))
+
+OBJDIR	:= objs/
+OBJDIRS	:= $(addprefix $(OBJDIR), $(SRCDIRS))
+OBJS	:= $(addprefix $(OBJDIR), $(SRCS:%.c=%.o))
+
+DSTRCTR	:= ./destructor.c
+
+#################
+# General rules #
+#################
 
 all: $(NAME)
-
-%.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
 
 $(NAME): $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o $(NAME) $(LIBS)
@@ -30,12 +54,30 @@ fclean: clean
 re: fclean all
 
 norm: FORCE
-	@printf "\e[31m"; norminette | grep -v ": OK!" \
+	@printf "$(RED)"; norminette | grep -v ": OK!" \
 	&& exit 1 \
-	|| printf "\e[32m%s\n\e[m" "Norm OK!"; printf "\e[m"
+	|| printf "$(GREEN)%s$(END)\n" "Norm OK"
+
+$(OBJDIRS):
+	mkdir -p $@
+
+$(OBJDIR)%.o: %.c $(OBJDIRS)
+	@printf "$(THIN)$(ITALIC)"
+	$(CC) $(CFLAGS) -c $< -o $@
+	@printf "$(END)"
+
+.PHONY: FORCE
+FORCE:
+
+###############
+# Debug rules #
+###############
 
 $(DSTRCTR):
 	curl https://gist.githubusercontent.com/ywake/793a72da8cdae02f093c02fc4d5dc874/raw/destructor.c > $(DSTRCTR)
+
+sani: $(LIBFT) $(OBJS)
+	$(CC) $(CFLAGS) -fsanitize=thread $(OBJS) -o $(NAME) $(LIBS)
 
 Darwin_leak: $(LIBFT) $(DSTRCTR) $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) ./tests/destructor.c -o $(NAME) $(LIBS)
@@ -43,6 +85,22 @@ Darwin_leak: $(LIBFT) $(DSTRCTR) $(OBJS)
 Linux_leak: $(LIBFT) $(OBJS)
 	$(CC) $(CFLAGS) -fsanitize=address $(OBJS) -o $(NAME) $(LIBS)
 
-leak: FORCE $(shell uname)_leak
+leak: $(shell uname)_leak
 
-FORCE:
+##########
+# Colors #
+##########
+
+END		= \e[0m
+BOLD	= \e[1m
+THIN	= \e[2m
+ITALIC	= \e[3m
+U_LINE	= \e[4m
+BLACK	= \e[30m
+RED		= \e[31m
+GREEN	= \e[32m
+YELLOW	= \e[33m
+BLUE	= \e[34m
+PURPLE	= \e[35m
+CYAN	= \e[36m
+WHITE	= \e[37m

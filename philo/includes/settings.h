@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/01/05 21:21:07 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/16 11:44:16 by ywake            ###   ########.fr       */
+/*   Created: 2022/01/20 15:38:14 by ywake             #+#    #+#             */
+/*   Updated: 2022/01/20 15:49:09 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 # define SETTINGS_H
 
 # include <stdbool.h>
+
+# define MAX_THREADS (32765)
 
 typedef struct s_settings
 {

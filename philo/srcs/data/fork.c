@@ -5,13 +5,16 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/01/09 01:38:15 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/18 14:19:36 by ywake            ###   ########.fr       */
+/*   Created: 2022/01/20 15:56:43 by ywake             #+#    #+#             */
+/*   Updated: 2022/01/21 14:47:28 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
 #include "fork.h"
+
+#include <stdlib.h>
+#include <stdbool.h>
+#include "utils.h"
 
 t_fork	*init_fork(void)
 {
@@ -22,7 +25,7 @@ t_fork	*init_fork(void)
 		return (NULL);
 	fork->ready = true;
 	if (pthread_mutex_init(&fork->mutex, NULL))
-		return (del_fork(fork));
+		return (free(fork), NULL);
 	return (fork);
 }
 
@@ -37,27 +40,37 @@ t_fork	*del_fork(t_fork *fork)
 	return (NULL);
 }
 
-// has lock
-bool	_take(t_fork *fork)
+t_fork	**init_forks(size_t num)
 {
-	bool	there_is_a_fork;
+	t_fork	**forks;
+	size_t	i;
 
-	if (fork == NULL)
-		return (false);
-	pthread_mutex_lock(&fork->mutex);
-	there_is_a_fork = fork->ready;
-	if (there_is_a_fork)
-		fork->ready = false;
-	pthread_mutex_unlock(&fork->mutex);
-	return (there_is_a_fork);
+	forks = (t_fork **)ft_calloc(num + 1, sizeof(t_fork *));
+	if (forks == NULL)
+		return (NULL);
+	i = 0;
+	while (i < num)
+	{
+		forks[i] = init_fork();
+		if (forks[i] == NULL)
+			return (del_forks(forks));
+		i++;
+	}
+	return (forks);
 }
 
-// has lock
-void	_return(t_fork *fork)
+t_fork	**del_forks(t_fork **forks)
 {
-	if (fork == NULL)
-		return ;
-	pthread_mutex_lock(&fork->mutex);
-	fork->ready = true;
-	pthread_mutex_unlock(&fork->mutex);
+	int	i;
+
+	if (forks == NULL)
+		return (NULL);
+	i = 0;
+	while (forks[i])
+	{
+		forks[i] = del_fork(forks[i]);
+		i++;
+	}
+	free(forks);
+	return (NULL);
 }

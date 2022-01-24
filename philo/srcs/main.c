@@ -5,49 +5,38 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/01/05 21:17:09 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/20 14:32:24 by ywake            ###   ########.fr       */
+/*   Created: 2022/01/20 15:33:45 by ywake             #+#    #+#             */
+/*   Updated: 2022/01/23 13:06:36 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdbool.h>
 #include <pthread.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <stdio.h>
-#include <string.h>
 #include "settings.h"
-#include "philosopher.h"
 #include "table.h"
+#include "philosopher.h"
+#include "thread.h"
 #include "utils.h"
 
 t_philo	**initialize(int argc, char *argv[]);
-int		my_abort(t_philo ***philos, pthread_t *observer, bool collect_threads);
-void	*routine(void *arg);
-void	*observe(void *arg);
+int		my_abort(t_philo **philos, pthread_t *observer);
+int		run_philos(t_philo **philos);
+int		detach_philos(t_philo **philos);
 
 int	main(int argc, char *argv[])
 {
-	t_philo		**philos;
 	pthread_t	observer;
-	int			i;
+	t_philo		**philos;
 
-	philos = initialize(argc, argv);
-	if (philos == NULL)
+	if (set((void **)&philos, initialize(argc, argv)))
 		return (1);
-	memset(&observer, 0, sizeof(pthread_t));
 	if (pthread_create(&observer, NULL, observe, philos))
-		return (my_abort(&philos, NULL, false));
-	i = -1;
-	while (++i < philos[0]->table->length && !is_finish(philos[0]->table))
-		if (pthread_create(&philos[i]->thread, NULL, routine, &philos[i]))
-			return (my_abort(&philos, &observer, true));
-	if (pthread_join(observer, NULL))
-		return (my_abort(&philos, &observer, true));
-	i = 0;
-	while (i < philos[0]->table->length)
-		if (pthread_detach(philos[i++]->thread))
-			return (my_abort(&philos, NULL, false));
-	my_abort(&philos, NULL, false);
+		return (1);
+	if (run_philos(philos))
+		return (my_abort(philos, &observer));
+	if (detach_philos(philos))
+		return (1);
+	pthread_join(observer, NULL);
 	return (0);
 }
 
@@ -59,87 +48,50 @@ t_philo	**initialize(int argc, char *argv[])
 
 	if (validity_check(argc, argv) == false)
 		return (NULL);
-	settings = init_settings(argc, argv);
-	table = init_table(settings);
-	philos = init_philosophers(table);
-	if (philos == NULL)
+	if (set((void **)&settings, init_settings(argc, argv)))
+		return (NULL);
+	if (set((void **)&table, init_table(settings)))
+		return ((t_philo **)del_settings(settings));
+	if (set((void **)&philos, init_philosophers(settings, table)))
 		return (del_settings(settings), (t_philo **)del_table(table));
 	return (philos);
 }
 
-int	my_abort(t_philo ***philos, pthread_t *observer, bool collect_threads)
+// Return 1
+int	my_abort(t_philo **philos, pthread_t *observer)
 {
-	int	i;
-
-	if (collect_threads)
-	{
-		if (observer != NULL)
-			pthread_detach(*observer);
-		i = 0;
-		while (i < (*philos)[0]->table->length)
-			pthread_detach((*philos)[i++]->thread);
-	}
-	pthread_mutex_lock(&(*philos)[0]->table->mutexes[SETTINGS]);
-	(*philos)[0]->table->settings = del_settings((*philos)[0]->table->settings);
-	pthread_mutex_unlock(&(*philos)[0]->table->mutexes[SETTINGS]);
-	i = 0;
-	while ((*philos)[i])
-		pthread_mutex_lock(&(*philos)[i++]->mutexes[TABLE]);
-	del_table((*philos)[0]->table);
-	i = 0;
-	while ((*philos)[i])
-	{
-		(*philos)[i]->table = NULL;
-		pthread_mutex_unlock(&(*philos)[i++]->mutexes[TABLE]);
-	}
-	*philos = del_philosophers(*philos);
+	pthread_detach(*observer);
+	detach_philos(philos);
 	return (1);
 }
 
-typedef void	(*t_func)(t_philo **philo);
-
-void	*routine(void *arg)
+// Returns 0 If seccess , -1 otherwise.
+int	run_philos(t_philo **philos)
 {
-	t_philo	**philo;
-	t_func	*funcs;
-	int		i;
+	int			i;
+	int			num_of_philos;
 
-	philo = (t_philo **)arg;
-	funcs = (t_func []){
-		take_forks, philo_eat, return_forks, philo_sleep, philo_think};
-	if (*philo && (*philo)->number % 2)
-		my_usleep(250);
+	num_of_philos = philos[0]->settings->num_of_philos;
 	i = 0;
-	while (*philo && (*philo)->table && !is_finish(table(philo)))
+	while (i < num_of_philos && philos[0] && !is_finish(&philos[0]->table))
 	{
-		funcs[i](philo);
-		i = (i + 1) % 5;
+		if (pthread_create(&philos[i]->thread, NULL, routine, philos[i]))
+			return (-1);
+		i++;
 	}
-	return (NULL);
+	return (0);
 }
 
-void	*observe(void *arg)
+// Returns 0 If seccess , -1 otherwise.
+int	detach_philos(t_philo **philos)
 {
-	int		i;
-	t_philo	**philos;
-	bool	flg_finish;
+	int	i;
+	int	res;
 
-	philos = (t_philo **)arg;
-	while (philos[0] && philos[0]->table && !is_finish(philos[0]->table))
-	{
-		i = 0;
-		flg_finish = true;
-		while (philos[0] && philos[0]->table && i < philos[0]->table->length)
-		{
-			if (philos[i] == NULL || is_died(&philos[i]))
-				return (NULL);
-			if (flg_finish && left_num_of_eat(&philos[i]) != 0)
-				flg_finish = false;
-			i++;
-		}
-		if (flg_finish && philos[0])
-			set_finish(philos[0]->table);
-		my_usleep(300);
-	}
-	return (NULL);
+	res = 0;
+	i = 0;
+	while (philos[i])
+		if (pthread_detach(philos[i++]->thread))
+			res = -1;
+	return (res);
 }

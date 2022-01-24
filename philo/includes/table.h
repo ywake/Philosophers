@@ -5,44 +5,30 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/01/06 22:31:13 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/20 13:46:25 by ywake            ###   ########.fr       */
+/*   Created: 2022/01/20 15:47:13 by ywake             #+#    #+#             */
+/*   Updated: 2022/01/23 11:31:01 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef TABLE_H
 # define TABLE_H
-
+# include <stdbool.h>
+# include <pthread.h>
 # include "settings.h"
 # include "fork.h"
-# include "types.h"
-
-enum e_table_mutex
-{
-	IS_FINISH,
-	PRINTF,
-	SETTINGS,
-	TABLE_MUTEX_LEN,
-};
 
 typedef struct s_table
 {
-	t_settings		*settings;
-	t_fork			**forks;
 	int				length;
-	bool			is_finish;
-	pthread_mutex_t	mutexes[TABLE_MUTEX_LEN];
+	t_fork			**forks;
+	bool			finish;
+	pthread_mutex_t	mutex;
 
 }	t_table;
 
 t_table	*init_table(t_settings *settings);
 t_table	*del_table(t_table *table);
 
-int		time_to_eat(t_table *table);
-int		time_to_sleep(t_table *table);
-void	set_finish(t_table *table);
-bool	is_finish(t_table *table);
-
-void	print(t_table *table, const char *fmt, t_timestamp time, int number);
+bool	is_finish(t_table **table);
 
 #endif

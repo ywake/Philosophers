@@ -5,18 +5,17 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/01/05 21:18:46 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/18 18:38:31 by ywake            ###   ########.fr       */
+/*   Created: 2022/01/20 15:36:21 by ywake             #+#    #+#             */
+/*   Updated: 2022/01/20 15:50:06 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "settings.h"
 
 #include <stdlib.h>
+#include <stdbool.h>
 #include <limits.h>
 #include "utils.h"
-
-#define MAX_THREADS (32765)
 
 enum	e_args
 {

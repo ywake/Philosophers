@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/01/05 21:45:29 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/20 13:37:45 by ywake            ###   ########.fr       */
+/*   Created: 2022/01/20 15:43:55 by ywake             #+#    #+#             */
+/*   Updated: 2022/01/20 18:25:50 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,16 @@
 # define UTILS_H
 
 # include <stdbool.h>
-# include "types.h"
+# include <sys/types.h>
+
+typedef ssize_t	t_timestamp;
+
+int			set(void **dest, void *src);
 
 int			ft_atoi(const char *str, bool *error);
+void		*ft_calloc(size_t count, size_t size);
+
 t_timestamp	get_timestamp(void);
-void		my_usleep(t_timestamp usec);
-void		*set(void	**dest, void *srcs);
+void		my_usleep(t_timestamp sleep_usec);
 
 #endif
