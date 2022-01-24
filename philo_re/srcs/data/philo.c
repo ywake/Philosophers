@@ -6,13 +6,14 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/20 16:05:04 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/23 19:09:04 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/24 12:18:11 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosopher.h"
 
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "settings.h"
 #include "table.h"
@@ -82,18 +83,8 @@ t_philo	**del_philosophers(t_philo **philos)
 	return (NULL);
 }
 
-t_timestamp	philo_eat_done(t_philo *philo)
+t_timestamp	philo_think(t_philo *philo)
 {
-	int	i;
-	int	fork_num;
-
-	philo->left_num_of_eat--;
-	i = 0;
-	while (i < 2)
-	{
-		fork_num = (philo->number + i) % philo->table->length;
-		_return(philo->table->forks[fork_num]);
-		i++;
-	}
-	return (20);
+	printf("%zu %d is thinking\n", get_timestamp(), philo->number + 1);
+	return (0);
 }

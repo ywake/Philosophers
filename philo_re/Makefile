@@ -1,4 +1,16 @@
 #############
+# Functions #
+#############
+
+# define uniq
+# 	$(eval seen :=)
+# 	$(foreach _,$1,$(if $(filter $_, ${seen}),, $(eval seen += $_)))
+# 	$(seen)
+# endef
+
+uniq = $(if $1,$(firstword $1) $(call uniq,$(filter-out $(firstword $1),$1)))
+
+#############
 # Variables #
 #############
 
@@ -15,10 +27,10 @@ SRCS	:= main.c thread.c \
 			data/fork.c data/fork_funcs.c \
 			data/table.c \
 			data/philo.c data/philo_funcs.c
-SRCDIRS	 = $(call uniq, $(filter-out ./, $(dir $(SRCS))))
+SRCDIRS	:= $(call uniq, $(filter-out ./, $(dir $(SRCS))))
 
 OBJDIR	:= objs/
-OBJDIRS	 = $(addprefix $(OBJDIR), $(SRCDIRS))
+OBJDIRS	:= $(addprefix $(OBJDIR), $(SRCDIRS))
 OBJS	:= $(addprefix $(OBJDIR), $(SRCS:%.c=%.o))
 
 DSTRCTR	:= ./destructor.c
@@ -54,6 +66,7 @@ $(OBJDIR)%.o: %.c $(OBJDIRS)
 	$(CC) $(CFLAGS) -c $< -o $@
 	@printf "$(END)"
 
+.PHONY: FORCE
 FORCE:
 
 ###############
@@ -72,19 +85,7 @@ Darwin_leak: $(LIBFT) $(DSTRCTR) $(OBJS)
 Linux_leak: $(LIBFT) $(OBJS)
 	$(CC) $(CFLAGS) -fsanitize=address $(OBJS) -o $(NAME) $(LIBS)
 
-leak: FORCE $(shell uname)_leak
-
-#############
-# Functions #
-#############
-
-# define uniq
-# 	$(eval seen :=)
-# 	$(foreach _,$1,$(if $(filter $_, ${seen}),, $(eval seen += $_)))
-# 	$(seen)
-# endef
-
-uniq = $(if $1,$(firstword $1) $(call uniq,$(filter-out $(firstword $1),$1)))
+leak: $(shell uname)_leak
 
 ##########
 # Colors #

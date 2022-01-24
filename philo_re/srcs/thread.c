@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/20 16:42:12 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/23 19:05:56 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/24 12:40:38 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ void	*observe(void *arg)
 		if (is_enough)
 			philos[0]->table->finish = true;
 		pthread_mutex_unlock(&philos[0]->table->mutex);
-		my_usleep(10);
+		my_usleep(1000);
 	}
 	return (NULL);
 }
@@ -71,8 +71,8 @@ void	*routine(void *arg)
 	t_timestamp	time;
 
 	philo = (t_philo *)arg;
-	funcs = (t_func []){take_right_fork, take_left_fork, philo_eat,
-		philo_eat_done, philo_sleep, philo_think};
+	funcs = (t_func []){take_right_fork, take_left_fork, philo_eat, philo_sleep,
+		philo_think};
 	if (philo->number % 2)
 		my_usleep(250);
 	i = 0;

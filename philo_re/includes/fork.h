@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/20 15:55:11 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/22 22:31:18 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/24 12:17:24 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ t_fork	*del_fork(t_fork *fork);
 t_fork	**init_forks(size_t num);
 t_fork	**del_forks(t_fork **forks);
 
-bool	try_take(t_fork *fork);
-void	_return(t_fork *fork);
+bool	try_take_a_fork(t_fork *fork);
+void	drop_a_fork(t_fork *fork);
 
 #endif
