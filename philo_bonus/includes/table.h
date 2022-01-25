@@ -6,20 +6,20 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/06 22:31:13 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/25 03:03:34 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/25 17:34:24 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef TABLE_H
 # define TABLE_H
 
-# include "my_semaphore.h"
+# include <semaphore.h>
+
 # include "settings.h"
-# include "types.h"
+# include "utils.h"
 
 typedef struct s_table
 {
-	t_settings	*settings;
 	int			length;
 	sem_t		*forks;
 	sem_t		*num_of_finish_philos;

@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/05 21:18:46 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/25 12:07:44 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/25 15:26:59 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,7 @@
 #include <limits.h>
 #include "utils.h"
 
-#define MAX_PHILOS (100)
-
-#ifdef __lilsnux__
+#ifdef __linux__
 # define SEM_VALUE_MAX (32767)
 #endif
 

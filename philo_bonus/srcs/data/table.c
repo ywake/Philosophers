@@ -5,18 +5,16 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/01/06 22:31:02 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/25 11:44:34 by ywake            ###   ########.fr       */
+/*   Created: 2022/01/25 15:41:37 by ywake             #+#    #+#             */
+/*   Updated: 2022/01/25 18:23:19 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "table.h"
 
-#include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include "settings.h"
-#include "utils.h"
+#include <stdio.h>
+
 #include "my_semaphore.h"
 
 sem_t	*semaphore(const char *name, int initial_value)
@@ -37,7 +35,6 @@ t_table	*init_table(t_settings *settings)
 	if (settings == NULL)
 		return (NULL);
 	table = (t_table *)catch_null(malloc(sizeof(t_table)));
-	table->settings = settings;
 	table->length = settings->num_of_philos;
 	table->forks = semaphore(FORKS_SEM, settings->num_of_philos);
 	table->num_of_finish_philos = semaphore(FINS_SEM, 0);
@@ -72,8 +69,6 @@ bool	is_all_live(t_table *table)
 void	print(t_table *table, const char *fmt, t_timestamp time, int number)
 {
 	catch_err(sem_wait(table->printf));
-	if (!is_all_live(table))
-		return ;
 	printf(fmt, time, number + 1);
 	catch_err(sem_post(table->printf));
 }
