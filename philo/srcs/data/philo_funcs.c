@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/20 17:48:33 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/24 12:41:27 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/25 12:26:07 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,8 @@ t_timestamp	philo_eat(t_philo *philo)
 	now = get_timestamp();
 	printf("%zu %d is eating\n", now, philo->number + 1);
 	philo->last_eat = now;
-	philo->left_num_of_eat--;
+	if (philo->left_num_of_eat > 0)
+		philo->left_num_of_eat--;
 	return (philo->settings->time_to_eat * 1000);
 }
 

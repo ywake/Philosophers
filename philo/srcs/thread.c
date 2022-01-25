@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/20 16:42:12 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/24 12:40:38 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/25 12:25:32 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ void	*routine(void *arg)
 		time = funcs[i](philo);
 		pthread_mutex_unlock(&philo->table->mutex);
 		my_usleep(time);
-		i = (i + 1) % 6;
+		i = (i + 1) % 5;
 	}
 	return (NULL);
 }
