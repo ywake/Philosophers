@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/24 21:49:33 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/25 12:49:09 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/25 15:15:01 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,11 @@ void	philo_job(t_philo *philo)
 		|| pthread_create(&thread[PHILOSOPHER], NULL, philo_action, philo)
 		|| pthread_detach(thread[PHILOSOPHER])
 		|| pthread_join(thread[OBSERVER], NULL))
+	{
+		pthread_detach(thread[OBSERVER]);
+		pthread_detach(thread[PHILOSOPHER]);
 		exit(1);
+	}
 	exit(0);
 }
 

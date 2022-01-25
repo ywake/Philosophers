@@ -6,13 +6,12 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/09 12:06:50 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/25 12:32:05 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/25 13:56:53 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosopher.h"
 
-#include <stdio.h>
 #include "table.h"
 #include "utils.h"
 
