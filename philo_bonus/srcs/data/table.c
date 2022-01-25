@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/06 22:31:02 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/13 17:52:11 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/25 11:44:34 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ t_table	*init_table(t_settings *settings)
 	table->length = settings->num_of_philos;
 	table->forks = semaphore(FORKS_SEM, settings->num_of_philos);
 	table->num_of_finish_philos = semaphore(FINS_SEM, 0);
-	table->num_of_living_philos = semaphore(LIVES_SEM, settings->num_of_philos);
+	table->everyone_is_alive = semaphore(LIVES_SEM, 1);
 	table->printf = semaphore(PRINT_SEM, 1);
 	return (table);
 }
@@ -54,7 +54,7 @@ t_table	*del_table(t_table *table)
 	catch_err(sem_unlink(FORKS_SEM));
 	catch_err(sem_close(table->num_of_finish_philos));
 	catch_err(sem_unlink(FINS_SEM));
-	catch_err(sem_close(table->num_of_living_philos));
+	catch_err(sem_close(table->everyone_is_alive));
 	catch_err(sem_unlink(LIVES_SEM));
 	catch_err(sem_close(table->printf));
 	catch_err(sem_unlink(PRINT_SEM));
@@ -64,20 +64,8 @@ t_table	*del_table(t_table *table)
 
 bool	is_all_live(t_table *table)
 {
-	int	i;
-
-	i = 0;
-	while (i < table->length)
-	{
-		catch_err(sem_wait(table->num_of_living_philos));
-		i++;
-	}
-	i = 0;
-	while (i < table->length)
-	{
-		catch_err(sem_post(table->num_of_living_philos));
-		i++;
-	}
+	catch_err(sem_wait(table->everyone_is_alive));
+	catch_err(sem_post(table->everyone_is_alive));
 	return (true);
 }
 

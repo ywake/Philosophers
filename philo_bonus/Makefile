@@ -6,7 +6,7 @@ CFLAGS	:= -g -Wall -Werror -Wextra $(INCLUDE)
 VPATH	:= $(SRCDIR) $(TESTDIR)
 
 SRCDIR	:= srcs/
-SRCS	:= main.c utils.c error.c\
+SRCS	:= main.c utils.c error.c jobs.c\
 			data/settings.c data/table.c \
 			data/philo_init.c data/philo_funcs.c
 OBJS	:= $(SRCS:%.c=$(SRCDIR)%.o)
@@ -37,11 +37,13 @@ norm: FORCE
 $(DSTRCTR):
 	curl https://gist.githubusercontent.com/ywake/793a72da8cdae02f093c02fc4d5dc874/raw/destructor.c > $(DSTRCTR)
 
+sani: $(LIBFT) $(OBJS)
+	$(CC) $(CFLAGS) -fsanitize=address $(OBJS) -o $(NAME) $(LIBS)
+
 Darwin_leak: $(LIBFT) $(DSTRCTR) $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) $(DSTRCTR) -o $(NAME) $(LIBS)
 
-Linux_leak: $(LIBFT) $(OBJS)
-	$(CC) $(CFLAGS) -fsanitize=address $(OBJS) -o $(NAME) $(LIBS)
+Linux_leak: sani
 
 leak: FORCE $(shell uname)_leak
 

@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/05 21:18:46 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/16 11:51:32 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/25 12:07:44 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ bool	validity_check(int argc, char *argv[])
 		if (i == TARGET_NUM_OF_EAT && input == 0)
 			return (false);
 		if (i != NUM_OF_PHILOS && i != TARGET_NUM_OF_EAT
-			&& (unsigned int)input > INT32_MAX / 1000)
+			&& (unsigned int)input > INT_MAX / 1000)
 			return (false);
 		i++;
 	}

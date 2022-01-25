@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/09 12:06:50 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/13 17:28:05 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/25 12:32:05 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,41 +16,42 @@
 #include "table.h"
 #include "utils.h"
 
-void	philo_eat(t_philo *philo)
+t_timestamp	philo_eat(t_philo *philo)
 {
 	size_t	time;
 
 	if (philo == NULL)
-		return ;
+		return (0);
 	time = get_timestamp();
-	print(philo->table, "%zu %d is eating\n", time, philo->number);
 	philo->last_eat = time;
-	my_usleep(philo->table->settings->time_to_eat * 1000);
+	print(philo->table, "%zu %d is eating\n", time, philo->number);
 	philo->num_of_eat++;
+	return (philo->table->settings->time_to_eat * 1000);
+}
+
+t_timestamp	philo_sleep(t_philo *philo)
+{
+	if (philo == NULL)
+		return (0);
 	return_forks(philo);
-}
-
-void	philo_sleep(t_philo *philo)
-{
-	if (philo == NULL)
-		return ;
 	print(philo->table, "%zu %d is sleeping\n", get_timestamp(), philo->number);
-	my_usleep(philo->table->settings->time_to_sleep * 1000);
+	return (philo->table->settings->time_to_sleep * 1000);
 }
 
-void	philo_think(t_philo *philo)
+t_timestamp	philo_think(t_philo *philo)
 {
 	if (philo == NULL)
-		return ;
+		return (0);
 	print(philo->table, "%zu %d is thinking\n", get_timestamp(), philo->number);
+	return (0);
 }
 
-void	take_forks(t_philo *philo)
+t_timestamp	take_forks(t_philo *philo)
 {
 	int	i;
 
 	if (philo == NULL)
-		return ;
+		return (0);
 	i = 0;
 	while (i < 2)
 	{
@@ -59,6 +60,7 @@ void	take_forks(t_philo *philo)
 			get_timestamp(), philo->number);
 		i++;
 	}
+	return (0);
 }
 
 void	return_forks(t_philo *philo)

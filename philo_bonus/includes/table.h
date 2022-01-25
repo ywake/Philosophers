@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/06 22:31:13 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/13 17:28:53 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/25 03:03:34 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ typedef struct s_table
 	int			length;
 	sem_t		*forks;
 	sem_t		*num_of_finish_philos;
-	sem_t		*num_of_living_philos;
+	sem_t		*everyone_is_alive;
 	sem_t		*printf;
 
 }	t_table;
