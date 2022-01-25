@@ -41,7 +41,7 @@ DSTRCTR	:= ./destructor.c
 
 all: $(NAME)
 
-$(NAME): $(OBJS)
+$(NAME): $(OBJDIRS) $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o $(NAME) $(LIBS)
 
 clean: FORCE
@@ -61,7 +61,7 @@ norm: FORCE
 $(OBJDIRS):
 	mkdir -p $@
 
-$(OBJDIR)%.o: %.c $(OBJDIRS)
+$(OBJDIR)%.o: %.c
 	@printf "$(THIN)$(ITALIC)"
 	$(CC) $(CFLAGS) -c $< -o $@
 	@printf "$(END)"
@@ -76,13 +76,13 @@ FORCE:
 $(DSTRCTR):
 	curl https://gist.githubusercontent.com/ywake/793a72da8cdae02f093c02fc4d5dc874/raw/destructor.c > $(DSTRCTR)
 
-sani: $(LIBFT) $(OBJS)
+sani: $(OBJDIRS) $(OBJS)
 	$(CC) $(CFLAGS) -fsanitize=thread $(OBJS) -o $(NAME) $(LIBS)
 
-Darwin_leak: $(LIBFT) $(DSTRCTR) $(OBJS)
+Darwin_leak: $(DSTRCTR) $(OBJDIRS) $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) ./tests/destructor.c -o $(NAME) $(LIBS)
 
-Linux_leak: $(LIBFT) $(OBJS)
+Linux_leak: $(OBJDIRS) $(OBJS)
 	$(CC) $(CFLAGS) -fsanitize=address $(OBJS) -o $(NAME) $(LIBS)
 
 leak: $(shell uname)_leak
