@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/05 21:18:46 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/25 15:26:59 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/25 23:24:10 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,6 @@
 #include <semaphore.h>
 #include <limits.h>
 #include "utils.h"
-
-#ifdef __linux__
-# define SEM_VALUE_MAX (32767)
-#endif
 
 enum	e_args
 {
