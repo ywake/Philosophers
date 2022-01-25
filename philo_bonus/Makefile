@@ -25,7 +25,7 @@ SRCS	:= main.c job_observer.c job_philosopher.c\
 			data/settings.c data/table.c \
 			data/philo.c data/philo_funcs.c \
 			utils/error.c utils/ft_atoi.c utils/timestamp.c
-SRCDIRS	:= $(call uniq, $(filter-out ./, $(dir $(SRCS))))
+SRCDIRS	:= $(call uniq, $(dir $(SRCS)))
 
 OBJDIR	:= objs/
 OBJDIRS	:= $(addprefix $(OBJDIR), $(SRCDIRS))

@@ -27,7 +27,7 @@ SRCS	:= main.c thread.c \
 			data/fork.c data/fork_funcs.c \
 			data/table.c \
 			data/philo.c data/philo_funcs.c
-SRCDIRS	:= $(call uniq, $(filter-out ./, $(dir $(SRCS))))
+SRCDIRS	:= $(call uniq, $(dir $(SRCS)))
 
 OBJDIR	:= objs/
 OBJDIRS	:= $(addprefix $(OBJDIR), $(SRCDIRS))
