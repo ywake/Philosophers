@@ -8,6 +8,7 @@
 !**/
 !*.c
 !*.h
+!README.md
 
 # tests
 destructor.c
