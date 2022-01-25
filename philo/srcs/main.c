@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/20 15:33:45 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/23 13:06:36 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/25 13:09:51 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ int	main(int argc, char *argv[])
 	if (run_philos(philos))
 		return (my_abort(philos, &observer));
 	if (detach_philos(philos))
-		return (1);
+		return (my_abort(philos, &observer));
 	pthread_join(observer, NULL);
 	return (0);
 }
