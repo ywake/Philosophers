@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/20 15:33:45 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/25 13:09:51 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/28 01:58:17 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 #include "thread.h"
 #include "utils.h"
 
-t_philo	**initialize(int argc, char *argv[]);
+t_philo	**initialize(int argc, char *argv[], t_settings *stg, t_table *table);
 int		my_abort(t_philo **philos, pthread_t *observer);
 int		run_philos(t_philo **philos);
 int		detach_philos(t_philo **philos);
@@ -26,42 +26,47 @@ int		detach_philos(t_philo **philos);
 int	main(int argc, char *argv[])
 {
 	pthread_t	observer;
+	t_settings	settings;
+	t_table		table;
 	t_philo		**philos;
 
-	if (set((void **)&philos, initialize(argc, argv)))
+	if (set((void **)&philos, initialize(argc, argv, &settings, &table)))
 		return (1);
 	if (pthread_create(&observer, NULL, observe, philos))
-		return (1);
+		return (my_abort(philos, NULL));
 	if (run_philos(philos))
 		return (my_abort(philos, &observer));
 	if (detach_philos(philos))
 		return (my_abort(philos, &observer));
 	pthread_join(observer, NULL);
+	my_abort(philos, NULL);
 	return (0);
 }
 
-t_philo	**initialize(int argc, char *argv[])
+t_philo	**initialize(int argc, char **argv, t_settings *setting, t_table *table)
 {
-	t_settings	*settings;
-	t_table		*table;
 	t_philo		**philos;
 
 	if (validity_check(argc, argv) == false)
 		return (NULL);
-	if (set((void **)&settings, init_settings(argc, argv)))
+	init_settings(setting, argc, argv);
+	if (init_table(table, setting))
 		return (NULL);
-	if (set((void **)&table, init_table(settings)))
-		return ((t_philo **)del_settings(settings));
-	if (set((void **)&philos, init_philosophers(settings, table)))
-		return (del_settings(settings), (t_philo **)del_table(table));
+	if (set((void **)&philos, init_philosophers(setting, table)))
+		return (NULL);
 	return (philos);
 }
 
 // Return 1
 int	my_abort(t_philo **philos, pthread_t *observer)
 {
-	pthread_detach(*observer);
-	detach_philos(philos);
+	if (observer != NULL)
+	{
+		pthread_detach(*observer);
+		detach_philos(philos);
+	}
+	del_table(philos[0]->table);
+	del_philosophers(philos);
 	return (1);
 }
 
@@ -73,7 +78,7 @@ int	run_philos(t_philo **philos)
 
 	num_of_philos = philos[0]->settings->num_of_philos;
 	i = 0;
-	while (i < num_of_philos && philos[0] && !is_finish(&philos[0]->table))
+	while (i < num_of_philos && philos[0] && !is_finish(philos[0]->table))
 	{
 		if (pthread_create(&philos[i]->thread, NULL, routine, philos[i]))
 			return (-1);

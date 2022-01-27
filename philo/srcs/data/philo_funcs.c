@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/20 17:48:33 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/25 12:26:07 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/28 02:05:06 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,36 +14,42 @@
 
 #include <stdio.h>
 
-void	take_a_fork(t_philo *philo, int fork_num)
+t_timestamp	take_a_fork(t_philo *philo, int fork_num)
 {
-	while (!(philo->table->finish
-			|| try_take_a_fork(philo->table->forks[fork_num])))
-	{
-		pthread_mutex_unlock(&philo->table->mutex);
-		my_usleep(1000);
-		pthread_mutex_lock(&philo->table->mutex);
-	}
-	if (philo->table->finish)
-		return ;
-	printf("%zu %d has taken a fork\n", get_timestamp(), philo->number + 1);
+	bool	is_success;
+
+	is_success = try_take_a_fork(philo->table->forks[fork_num]);
+	if (!is_success)
+		return (-1000);
+	if (!philo->table->finish)
+		printf("%zu %d has taken a fork\n", get_timestamp(), philo->number + 1);
+	return (0);
 }
 
+/**
+ * Return Value
+ * Success: 0
+ * Failure: -(retry time)
+ */
 t_timestamp	take_right_fork(t_philo *philo)
 {
 	int	fork_num;
 
 	fork_num = philo->number;
-	take_a_fork(philo, fork_num);
-	return (0);
+	return (take_a_fork(philo, fork_num));
 }
 
+/**
+ * Return Value
+ * Success: 0
+ * Failure: -(retry time)
+ */
 t_timestamp	take_left_fork(t_philo *philo)
 {
 	int	fork_num;
 
 	fork_num = (philo->number + 1) % philo->settings->num_of_philos;
-	take_a_fork(philo, fork_num);
-	return (0);
+	return (take_a_fork(philo, fork_num));
 }
 
 t_timestamp	philo_eat(t_philo *philo)

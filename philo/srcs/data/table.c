@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/20 16:19:17 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/23 11:19:34 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/28 01:57:36 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,40 +17,36 @@
 #include <stdio.h>
 #include "utils.h"
 
-t_table	*init_table(t_settings *settings)
+/**
+ * Return Value
+ * 0: Success
+ * -1: Failed
+ */
+int	init_table(t_table *table, t_settings *settings)
 {
-	t_table	*table;
-
-	if (set((void **)&table, ft_calloc(1, sizeof(t_table))))
-		return (NULL);
 	table->length = settings->num_of_philos;
+	table->finish = false;
 	if (set((void **)&table->forks, init_forks(settings->num_of_philos)))
-		return (del_table(table));
+		return (-1);
 	if (pthread_mutex_init(&table->mutex, NULL))
-		return (del_table(table));
-	return (table);
+		return (del_forks(table->forks), -1);
+	return (0);
 }
 
-t_table	*del_table(t_table *table)
+void	del_table(t_table *table)
 {
-	if (table == NULL)
-		return (NULL);
 	pthread_mutex_lock(&table->mutex);
 	table->forks = del_forks(table->forks);
 	pthread_mutex_unlock(&table->mutex);
 	pthread_mutex_destroy(&table->mutex);
-	free(table);
-	return (NULL);
 }
 
-bool	is_finish(t_table **table)
+bool	is_finish(t_table *table)
 {
 	bool	is_finish;
 
-	if (*table == NULL)
-		return (true);
-	pthread_mutex_lock(&(*table)->mutex);
-	is_finish = (*table)->finish;
-	pthread_mutex_unlock(&(*table)->mutex);
+	pthread_mutex_lock(&table->mutex);
+	is_finish = table->finish;
+	pthread_mutex_unlock(&table->mutex);
 	return (is_finish);
 }

@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/20 15:36:21 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/20 15:50:06 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/28 01:13:53 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,13 +52,8 @@ bool	validity_check(int argc, char *argv[])
 	return (true);
 }
 
-t_settings	*init_settings(int argc, char *argv[])
+void	init_settings(t_settings *settings, int argc, char *argv[])
 {
-	t_settings	*settings;
-
-	settings = (t_settings *)malloc(sizeof(t_settings));
-	if (settings == NULL)
-		return (NULL);
 	settings->num_of_philos = ft_atoi(argv[NUM_OF_PHILOS], NULL);
 	settings->time_to_die = ft_atoi(argv[TIME_TO_DIE], NULL);
 	settings->time_to_eat = ft_atoi(argv[TIME_TO_EAT], NULL);
@@ -67,11 +62,4 @@ t_settings	*init_settings(int argc, char *argv[])
 		settings->target_num_of_eat = ft_atoi(argv[TARGET_NUM_OF_EAT], NULL);
 	else
 		settings->target_num_of_eat = -1;
-	return (settings);
-}
-
-t_settings	*del_settings(t_settings *settings)
-{
-	free(settings);
-	return (NULL);
 }

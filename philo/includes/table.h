@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/20 15:47:13 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/23 11:31:01 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/28 01:47:35 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,9 @@ typedef struct s_table
 
 }	t_table;
 
-t_table	*init_table(t_settings *settings);
-t_table	*del_table(t_table *table);
+int		init_table(t_table *table, t_settings *settings);
+void	del_table(t_table *table);
 
-bool	is_finish(t_table **table);
+bool	is_finish(t_table *table);
 
 #endif

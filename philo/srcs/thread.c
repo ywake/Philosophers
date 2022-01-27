@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/20 16:42:12 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/25 12:25:32 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/28 01:48:47 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void	*observe(void *arg)
 	bool	is_enough;
 
 	philos = (t_philo **)arg;
-	while (!is_finish(&philos[0]->table))
+	while (!is_finish(philos[0]->table))
 	{
 		pthread_mutex_lock(&philos[0]->table->mutex);
 		is_enough = true;
@@ -66,28 +66,26 @@ typedef t_timestamp	(*t_func)(t_philo *philo);
 void	*routine(void *arg)
 {
 	t_philo		*philo;
+	t_table		*table;
 	t_func		*funcs;
 	int			i;
 	t_timestamp	time;
 
 	philo = (t_philo *)arg;
-	funcs = (t_func []){take_right_fork, take_left_fork, philo_eat, philo_sleep,
-		philo_think};
+	table = philo->table;
+	funcs = (t_func []){take_right_fork, take_left_fork,
+		philo_eat, philo_sleep, philo_think};
 	if (philo->number % 2)
 		my_usleep(250);
 	i = 0;
-	while (true)
+	while (!is_finish(table))
 	{
-		pthread_mutex_lock(&philo->table->mutex);
-		if (philo->table->finish)
-		{
-			pthread_mutex_unlock(&philo->table->mutex);
-			break ;
-		}
+		pthread_mutex_lock(&table->mutex);
 		time = funcs[i](philo);
-		pthread_mutex_unlock(&philo->table->mutex);
-		my_usleep(time);
-		i = (i + 1) % 5;
+		pthread_mutex_unlock(&table->mutex);
+		my_usleep(time * (1 - 2 * (time < 0)));
+		if (time >= 0)
+			i = (i + 1) % 5;
 	}
 	return (NULL);
 }
