@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/25 15:20:04 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/25 17:45:50 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/27 23:56:50 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 t_philo	**initialize(int argc, char *argv[]);
 pid_t	*start_simulation(t_philo **philos);
 void	end_simulation(t_philo **philos, pid_t *pids);
-t_philo	**clear(t_philo **philos);
+void	clear(t_philo ***philos, pid_t **pids);
 
 int	main(int argc, char *argv[])
 {
@@ -35,7 +35,7 @@ int	main(int argc, char *argv[])
 	philos = initialize(argc, argv);
 	pids = start_simulation(philos);
 	end_simulation(philos, pids);
-	philos = clear(philos);
+	clear(&philos, &pids);
 }
 
 t_philo	**initialize(int argc, char *argv[])
@@ -97,15 +97,16 @@ void	end_simulation(t_philo **philos, pid_t *child_pids)
 	}
 }
 
-t_philo	**clear(t_philo **philos)
+void	clear(t_philo ***philos, pid_t **pids)
 {
 	t_settings	*settings;
 	t_table		*table;
 
-	settings = philos[0]->settings;
-	table = philos[0]->table;
-	del_philosophers(philos);
+	settings = (*philos)[0]->settings;
+	table = (*philos)[0]->table;
+	*philos = del_philosophers(*philos);
 	del_table(table);
 	del_settings(settings);
-	return (NULL);
+	free(*pids);
+	*pids = NULL;
 }
