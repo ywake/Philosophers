@@ -80,7 +80,7 @@ sani: $(OBJDIRS) $(OBJS)
 	$(CC) $(CFLAGS) -fsanitize=thread $(OBJS) -o $(NAME) $(LIBS)
 
 Darwin_leak: $(DSTRCTR) $(OBJDIRS) $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) ./tests/destructor.c -o $(NAME) $(LIBS)
+	$(CC) $(CFLAGS) $(OBJS) $(DSTRCTR) -o $(NAME) $(LIBS)
 
 Linux_leak: $(OBJDIRS) $(OBJS)
 	$(CC) $(CFLAGS) -fsanitize=address $(OBJS) -o $(NAME) $(LIBS)
