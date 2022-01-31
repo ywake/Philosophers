@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/20 15:33:45 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/28 01:58:17 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/31 09:30:52 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,8 @@ int	main(int argc, char *argv[])
 		return (my_abort(philos, &observer));
 	if (detach_philos(philos))
 		return (my_abort(philos, &observer));
-	pthread_join(observer, NULL);
+	if (pthread_join(observer, NULL))
+		return (my_abort(philos, &observer));
 	my_abort(philos, NULL);
 	return (0);
 }
@@ -53,7 +54,7 @@ t_philo	**initialize(int argc, char **argv, t_settings *setting, t_table *table)
 	if (init_table(table, setting))
 		return (NULL);
 	if (set((void **)&philos, init_philosophers(setting, table)))
-		return (NULL);
+		return (del_table(table), NULL);
 	return (philos);
 }
 

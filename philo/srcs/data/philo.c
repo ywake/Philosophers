@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/20 16:05:04 by ywake             #+#    #+#             */
-/*   Updated: 2022/01/24 12:18:11 by ywake            ###   ########.fr       */
+/*   Updated: 2022/01/31 09:17:42 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "settings.h"
 #include "table.h"
@@ -31,6 +32,7 @@ t_philo	*init_philosopher(t_settings *setting, t_table *table, int philo_number)
 	philo->number = philo_number;
 	philo->left_num_of_eat = setting->target_num_of_eat;
 	philo->last_eat = get_timestamp();
+	memset(&philo->thread, 0, sizeof(pthread_t));
 	return (philo);
 }
 
